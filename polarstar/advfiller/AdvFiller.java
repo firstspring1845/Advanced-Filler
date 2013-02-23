@@ -13,6 +13,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.Configuration;
 import net.minecraftforge.common.ForgeChunkManager;
 import net.minecraftforge.common.ForgeChunkManager.Ticket;
+import net.minecraftforge.common.ForgeDirection;
 import net.minecraftforge.common.Property;
 import buildcraft.BuildCraftBuilders;
 import buildcraft.BuildCraftCore;
@@ -94,7 +95,10 @@ public class AdvFiller {
 				int yCoord = ticket.getModData().getInteger("yCoord");
 				int zCoord = ticket.getModData().getInteger("zCoord");
 				TileAdvFiller filler = (TileAdvFiller) world.getBlockTileEntity(xCoord, yCoord, zCoord);
-				filler.preInit();
+				filler.orient = ForgeDirection.values()[world.getBlockMetadata(xCoord, yCoord, zCoord)].getOpposite();
+				filler.setArea();
+				filler.chunkTicket = ticket;
+				filler.setLoadingChunks();
 			}
 		}
 
