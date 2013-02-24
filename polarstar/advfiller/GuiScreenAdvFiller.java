@@ -38,24 +38,24 @@ public class GuiScreenAdvFiller extends GuiScreen
 	}
 
 	public void initGui()
-	{
+	{//16
 		this.controlList.clear();
 		byte cnt = 0;
-		byte m = -10; // 位置補正＋間隔取り
-		 String str[] = {"--", "-", "+", "++"};
+		byte m = -36; // 位置補正＋間隔取り
+		 String str[] = {"<<", "-", "+", "++"};
 		for(int i = 3;i <= 22; i++){
-			this.controlList.add(new GuiButton(i, ((this.width - 248) / 2) + i * 10 + m, (this.height - 166) / 2 + 105, 10, 20, str[cnt]));
+			this.controlList.add(new GuiButton(i, ((this.width - 248) / 2) + i * 12 + m, (this.height - 166) / 2 + 58, 12, 20, str[cnt]));
 			cnt++;
 			if(cnt > 3){
 				cnt = 0;
-				m += 3;
+				m += 2;
 			}
 		}
-		this.controlList.add(new GuiButton(1, ((this.width - 248) / 2) + 20, (this.height - 166) / 2 + 41, 40, 20, "Type"));
-		this.controlList.add(new GuiButton(2, ((this.width - 248) / 2) + 106, (this.height - 166) / 2 + 135, 40, 20, "Set"));
-		this.controlList.add(new GuiButton(23, ((this.width - 248) / 2) + 192, (this.height - 166) / 2 + 135, 40, 20, "Loop : " + getStateFromBoolean(loopMode)));
-		this.controlList.add(new GuiButton(24, ((this.width - 248) / 2) + 20, (this.height - 166) / 2 + 135, 40, 20, (iterate ? "ASCEND" : "DESCEND")));
-		this.controlList.add(new GuiButton(25, ((this.width - 248) / 2) + 63, (this.height - 166) / 2 + 135, 40, 20, "Drop : " + getStateFromBoolean(drop)));
+		this.controlList.add(new GuiButton(1, ((this.width - 248) / 2) + 150, (this.height - 166) / 2 + 92, 48, 20, "Type"));
+		this.controlList.add(new GuiButton(2, ((this.width - 248) / 2) + 100, (this.height - 166) / 2 + 92, 48, 20, "Set"));
+		this.controlList.add(new GuiButton(23, ((this.width - 248) / 2) + 200, (this.height - 166) / 2 + 92, 48, 20, "Loop:" + getStateFromBoolean(loopMode)));
+		this.controlList.add(new GuiButton(24, ((this.width - 248) / 2) + 0, (this.height - 166) / 2 + 92, 48, 20, (iterate ? "ASCEND" : "DESCEND")));
+		this.controlList.add(new GuiButton(25, ((this.width - 248) / 2) + 50, (this.height - 166) / 2 + 92, 48, 20, "Drop:" + getStateFromBoolean(drop)));
 	}
 
 	/**
@@ -140,7 +140,7 @@ public class GuiScreenAdvFiller extends GuiScreen
 			break;
 		case 23:
 			loopMode = !loopMode;
-			button.displayString = "Loop : " + getStateFromBoolean(loopMode);
+			button.displayString = "Loop:" + getStateFromBoolean(loopMode);
 			break;
 		case 24:
 			iterate = !iterate;
@@ -148,7 +148,7 @@ public class GuiScreenAdvFiller extends GuiScreen
 			break;
 		case 25:
 			drop = !drop;
-			button.displayString = "Drop : " + getStateFromBoolean(drop);
+			button.displayString = "Drop:" + getStateFromBoolean(drop);
 		}
 	}
 	
@@ -211,9 +211,9 @@ public class GuiScreenAdvFiller extends GuiScreen
 		int var1 = this.mc.renderEngine.getTexture("/polarstar/advfiller/gui/advfiller.png");
 		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
 		this.mc.renderEngine.bindTexture(var1);
-		int var2 = (this.width - 248) / 2;
-		int var3 = (this.height - 166) / 2;
-		this.drawTexturedModalRect(var2, var3, 0, 0, 248, 166);
+		int var2 = (this.width - 256) / 2;
+		int var3 = (this.height - 124) / 2;
+		this.drawTexturedModalRect(var2, var3, 0, 0, 256, 124);
 	}
 
 	/**
@@ -222,33 +222,35 @@ public class GuiScreenAdvFiller extends GuiScreen
 	public void drawScreen(int par1, int par2, float par3)
 	{
 		this.drawDefaultBackground();
-		int var4 = (this.width - 248) / 2;
-		int var5 = (this.height - 166) / 2;
+		int var4 = (this.width - 256) / 2;
+		int var5 = (this.height - 124) / 2;
 		String str;
 		str = String.valueOf(left);
-		this.fontRenderer.drawString(str, var4 + 40 - this.fontRenderer.getStringWidth(str) / 2, var5 + 90, 65280);
+		this.fontRenderer.drawString(str, var4 + 29 - this.fontRenderer.getStringWidth(str) / 2, var5 + 23, 65280);
 		str = String.valueOf(right);
-		this.fontRenderer.drawString(str, var4 + 83 - this.fontRenderer.getStringWidth(str) / 2, var5 + 90, 65280);
+		this.fontRenderer.drawString(str, var4 + 79 - this.fontRenderer.getStringWidth(str) / 2, var5 + 23, 65280);
 		str = String.valueOf(up);
-		this.fontRenderer.drawString(str, var4 + 126 - this.fontRenderer.getStringWidth(str) / 2, var5 + 90, 65280);
+		this.fontRenderer.drawString(str, var4 + 129 - this.fontRenderer.getStringWidth(str) / 2, var5 + 23, 65280);
 		str = String.valueOf(down);
-		this.fontRenderer.drawString(str, var4 + 169 - this.fontRenderer.getStringWidth(str) / 2, var5 + 90, 65280);
+		this.fontRenderer.drawString(str, var4 + 179 - this.fontRenderer.getStringWidth(str) / 2, var5 + 23, 65280);
 		str = String.valueOf(forward);
-		this.fontRenderer.drawString(str, var4 + 212 - this.fontRenderer.getStringWidth(str) / 2, var5 + 90, 65280);
+		this.fontRenderer.drawString(str, var4 + 229 - this.fontRenderer.getStringWidth(str) / 2, var5 + 23, 65280);
 		str = "LEFT:";
-		this.fontRenderer.drawString(str, var4 + 20, var5 + 80, 5197647);
+		this.fontRenderer.drawString(str, var4 + 5, var5 + 10, 5197647);
 		str = "RIGHT:";
-		this.fontRenderer.drawString(str, var4 + 63, var5 + 80, 5197647);
+		this.fontRenderer.drawString(str, var4 + 63, var5 + 10, 5197647);
 		str = "UP:";
-		this.fontRenderer.drawString(str, var4 + 106, var5 + 80, 5197647);
+		this.fontRenderer.drawString(str, var4 + 106, var5 + 10, 5197647);
 		str = "DOWN:";
-		this.fontRenderer.drawString(str, var4 + 149, var5 + 80, 5197647);
+		this.fontRenderer.drawString(str, var4 + 149, var5 + 10, 5197647);
 		str = "FORWARD:";
-		this.fontRenderer.drawString(str, var4 + 192, var5 + 80, 5197647);
+		this.fontRenderer.drawString(str, var4 + 192, var5 + 10, 5197647);
 		str = getType(type);
-		this.fontRenderer.drawString(str, var4 + 66, var5 + 46, 65280);
-		str = "Remove Mode Iteration";
-		this.fontRenderer.drawString(str, var4 + 20, var5 + 125, 5197647);
+		this.fontRenderer.drawString(str, var4 + 7, var5 + 107, 65280);
+		str = "Iteration:";
+		this.fontRenderer.drawString(str, var4 + 5, var5 + 60, 5197647);
+		str = "Type:";
+		this.fontRenderer.drawString(str, var4 + 5, var5 + 95, 5197647);
 		super.drawScreen(par1, par2, par3);
 	}
 	
