@@ -38,11 +38,11 @@ public class GuiScreenAdvFiller extends GuiScreen
 	}
 
 	public void initGui()
-	{//16
+	{
 		this.controlList.clear();
 		byte cnt = 0;
 		byte m = -36; // 位置補正＋間隔取り
-		 String str[] = {"<<", "-", "+", "++"};
+		 String str[] = {"--", "-", "+", "++"};
 		for(int i = 3;i <= 22; i++){
 			this.controlList.add(new GuiButton(i, ((this.width - 248) / 2) + i * 12 + m, (this.height - 166) / 2 + 58, 12, 20, str[cnt]));
 			cnt++;
