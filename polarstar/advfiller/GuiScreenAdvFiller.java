@@ -238,13 +238,13 @@ public class GuiScreenAdvFiller extends GuiScreen
 		str = "LEFT:";
 		this.fontRenderer.drawString(str, var4 + 5, var5 + 10, 5197647);
 		str = "RIGHT:";
-		this.fontRenderer.drawString(str, var4 + 63, var5 + 10, 5197647);
+		this.fontRenderer.drawString(str, var4 + 55, var5 + 10, 5197647);
 		str = "UP:";
-		this.fontRenderer.drawString(str, var4 + 106, var5 + 10, 5197647);
+		this.fontRenderer.drawString(str, var4 + 105, var5 + 10, 5197647);
 		str = "DOWN:";
-		this.fontRenderer.drawString(str, var4 + 149, var5 + 10, 5197647);
+		this.fontRenderer.drawString(str, var4 + 155, var5 + 10, 5197647);
 		str = "FORWARD:";
-		this.fontRenderer.drawString(str, var4 + 192, var5 + 10, 5197647);
+		this.fontRenderer.drawString(str, var4 + 205, var5 + 10, 5197647);
 		str = getType(type);
 		this.fontRenderer.drawString(str, var4 + 7, var5 + 107, 65280);
 		str = "Iteration:";
