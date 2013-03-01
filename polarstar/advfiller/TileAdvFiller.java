@@ -213,8 +213,8 @@ public class TileAdvFiller extends TileMachine implements IPowerReceptor {
 		case 0:
 			frameCreated = false;
 			ignoreCoordList = new ArrayList();
-			quarryList = null;
 			calculateFrame();
+			createQuarryList();
 			break;
 		case 1:
 			createRemoveList();
@@ -340,8 +340,6 @@ public class TileAdvFiller extends TileMachine implements IPowerReceptor {
 			buildFrame();
 			return;
 		}
-		if(quarryList == null)
-			createQuarryList();
 		dig();
 	}
 	
