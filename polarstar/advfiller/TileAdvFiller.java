@@ -22,7 +22,6 @@ import net.minecraftforge.common.ForgeChunkManager.Ticket;
 import net.minecraftforge.common.ForgeDirection;
 import buildcraft.BuildCraftFactory;
 import buildcraft.api.core.IAreaProvider;
-import buildcraft.api.core.Position;
 import buildcraft.api.power.IPowerProvider;
 import buildcraft.api.power.IPowerReceptor;
 import buildcraft.api.power.PowerFramework;
@@ -87,7 +86,7 @@ public class TileAdvFiller extends TileMachine implements IPowerReceptor {
 			IAreaProvider a = null;
 			Position pos = new Position(xCoord,yCoord,zCoord,orient);
 			pos.moveForwards(1);
-			TileEntity tile = worldObj.getBlockTileEntity((int)pos.x, (int)pos.y, (int)pos.z);
+			TileEntity tile = worldObj.getBlockTileEntity(pos.x, pos.y, pos.z);
 			if(tile instanceof IAreaProvider)
 				a = (IAreaProvider)tile;
 			if (a != null) {
@@ -117,9 +116,9 @@ public class TileAdvFiller extends TileMachine implements IPowerReceptor {
 		int x,y,z;
 		//minX
 		if(a.xMin() < a.xMax())
-			x = (int)pos.x - a.xMin();
+			x = pos.x - a.xMin();
 		else
-			x = (int)pos.x - a.xMax();
+			x = pos.x - a.xMax();
 		switch(orient){
 		case SOUTH:
 			right = x;
@@ -135,9 +134,9 @@ public class TileAdvFiller extends TileMachine implements IPowerReceptor {
 		
 		//maxX
 		if(a.xMin() < a.xMax())
-			x = a.xMax() - (int)pos.x;
+			x = a.xMax() - pos.x;
 		else
-			x = a.xMin() - (int)pos.x;
+			x = a.xMin() - pos.x;
 		switch(orient){
 		case SOUTH:
 			left = x;
@@ -153,9 +152,9 @@ public class TileAdvFiller extends TileMachine implements IPowerReceptor {
 		
 		//minZ
 		if(a.zMin() < a.zMax())
-			z = (int)pos.z - a.zMin();
+			z = pos.z - a.zMin();
 		else
-			z = (int)pos.z - a.zMax();
+			z = pos.z - a.zMax();
 		switch(orient){
 		case SOUTH:
 			break;
@@ -171,9 +170,9 @@ public class TileAdvFiller extends TileMachine implements IPowerReceptor {
 		
 		//maxZ
 		if(a.zMin() < a.zMax())
-			z = a.zMax() - (int)pos.z;
+			z = a.zMax() - pos.z;
 		else
-			z = a.zMin() - (int)pos.z;
+			z = a.zMin() - pos.z;
 		switch(orient){
 		case SOUTH:
 			forward = z;
@@ -188,10 +187,10 @@ public class TileAdvFiller extends TileMachine implements IPowerReceptor {
 		}
 		
 		//minY
-		down = (int)pos.y - a.yMin();
+		down = pos.y - a.yMin();
 		
 		//maxY
-		up = a.yMax() - (int)pos.y;
+		up = a.yMax() - pos.y;
 	}
 	
 	public void preInit(){
@@ -390,12 +389,12 @@ public class TileAdvFiller extends TileMachine implements IPowerReceptor {
 		powerProvider.useEnergy(25, 25, true);
 		if(removeListIterator.hasNext()){
 			Position pos = (Position)removeListIterator.next();
-			worldObj.setBlockWithNotify((int)pos.x, (int)pos.y, (int)pos.z, 0);
+			worldObj.setBlockWithNotify(pos.x, pos.y, pos.z, 0);
 			return;
 		}
 		if(frameBuildListIterator.hasNext()){
 			Position pos = (Position)frameBuildListIterator.next();
-			worldObj.setBlockWithNotify((int)pos.x, (int)pos.y, (int)pos.z, BuildCraftFactory.frameBlock.blockID);
+			worldObj.setBlockWithNotify(pos.x, pos.y, pos.z, BuildCraftFactory.frameBlock.blockID);
 			return;
 		}
 		calculateFrame();
@@ -420,7 +419,7 @@ public class TileAdvFiller extends TileMachine implements IPowerReceptor {
 	
 	public boolean checkBreakable(int x, int y, int z){
 		for(Position pos : ignoreCoordList)
-			if(x == (int)pos.x && z == (int)pos.z)
+			if(x == pos.x && z == pos.z)
 				return false;
 		if(!BlockUtil.canChangeBlock(worldObj, x, y, z)){
 			ignoreCoordList.add(new Position(x,y,z));
@@ -435,11 +434,11 @@ public class TileAdvFiller extends TileMachine implements IPowerReceptor {
 		powerProvider.useEnergy(100, 100, true);
 		if(quarryListIterator.hasNext()){
 			Position pos = (Position)quarryListIterator.next();
-			List<ItemStack> stacks = BlockUtil.getItemStackFromBlock(worldObj, (int)pos.x, (int)pos.y, (int)pos.z);
+			List<ItemStack> stacks = BlockUtil.getItemStackFromBlock(worldObj, pos.x, pos.y, pos.z);
 			if(AdvFiller.breakEffect)
 				//クァーリーよりコピペ
-				worldObj.playAuxSFXAtEntity(null, 2001, (int)pos.x, (int)pos.y, (int)pos.z, (worldObj.getBlockId((int)pos.x, (int)pos.y, (int)pos.z) + (worldObj.getBlockMetadata((int)pos.x, (int)pos.y, (int)pos.z) << 12)));
-			worldObj.setBlockWithNotify((int)pos.x, (int)pos.y, (int)pos.z, 0);
+				worldObj.playAuxSFXAtEntity(null, 2001, pos.x, pos.y, pos.z, (worldObj.getBlockId(pos.x, pos.y, pos.z) + (worldObj.getBlockMetadata(pos.x, pos.y, pos.z) << 12)));
+			worldObj.setBlockWithNotify(pos.x, pos.y, pos.z, 0);
 			if (stacks == null || stacks.isEmpty())
 				return;
 			for (ItemStack stack : stacks) {
@@ -491,7 +490,7 @@ public class TileAdvFiller extends TileMachine implements IPowerReceptor {
 						i = 3;
 					}
 					pos = (Position)removeListIterator.next();
-					doRemove((int)pos.x, (int)pos.y, (int)pos.z);
+					doRemove(pos.x, pos.y, pos.z);
 
 				}else if(!loopMode){
 					finished = true;
@@ -517,7 +516,7 @@ public class TileAdvFiller extends TileMachine implements IPowerReceptor {
 						i = 3;
 					}
 					pos = (Position)removeListIterator.previous();
-					doRemove((int)pos.x, (int)pos.y, (int)pos.z);
+					doRemove(pos.x, pos.y, pos.z);
 				}else if(!loopMode){
 					finished = true;
 					worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
@@ -559,7 +558,7 @@ public class TileAdvFiller extends TileMachine implements IPowerReceptor {
 				if(powerProvider.useEnergy(25, 25, false) != 25)
 					return;
 				pos = (Position)fillListIterator.next();
-				if(doFill((int)pos.x, (int)pos.y, (int)pos.z))
+				if(doFill(pos.x, pos.y, pos.z))
 						powerProvider.useEnergy(25, 25, true);
 				else if(!loopMode){
 					fillListIterator.previous();
@@ -647,7 +646,7 @@ public class TileAdvFiller extends TileMachine implements IPowerReceptor {
 					return;
 				powerProvider.useEnergy(25, 25, true);
 				pos = (Position)removeListIterator.next();
-				doRemove((int)pos.x, (int)pos.y, (int)pos.z);
+				doRemove(pos.x, pos.y, pos.z);
 				if(i == 3)//下に制御が行かないように
 					return;
 			}
@@ -657,7 +656,7 @@ public class TileAdvFiller extends TileMachine implements IPowerReceptor {
 				if(powerProvider.useEnergy(25, 25, false) != 25)
 					return;
 				pos = (Position)fillListIterator.previous();
-				if(doFill((int)pos.x, (int)pos.y, (int)pos.z))
+				if(doFill(pos.x, pos.y, pos.z))
 					powerProvider.useEnergy(25, 25, true);
 				else{
 					if(!loopMode){
