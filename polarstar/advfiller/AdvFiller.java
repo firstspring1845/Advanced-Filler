@@ -9,11 +9,12 @@ import net.minecraft.block.material.Material;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.world.ChunkCoordIntPair;
 import net.minecraft.world.World;
 import net.minecraftforge.common.Configuration;
 import net.minecraftforge.common.ForgeChunkManager;
 import net.minecraftforge.common.ForgeChunkManager.Ticket;
-import net.minecraftforge.common.ForgeDirection;
+import net.minecraftforge.common.ForgeChunkManager.Type;
 import net.minecraftforge.common.Property;
 import buildcraft.BuildCraftBuilders;
 import buildcraft.BuildCraftCore;
@@ -94,11 +95,8 @@ public class AdvFiller {
 				int xCoord = ticket.getModData().getInteger("xCoord");
 				int yCoord = ticket.getModData().getInteger("yCoord");
 				int zCoord = ticket.getModData().getInteger("zCoord");
-				TileAdvFiller filler = (TileAdvFiller) world.getBlockTileEntity(xCoord, yCoord, zCoord);
-				filler.orient = ForgeDirection.values()[world.getBlockMetadata(xCoord, yCoord, zCoord)].getOpposite();
-				filler.setArea();
-				filler.chunkTicket = ticket;
-				filler.setLoadingChunks();
+				ForgeChunkManager.forceChunk(ForgeChunkManager.requestTicket(AdvFiller.instance, world, Type.NORMAL), new ChunkCoordIntPair(xCoord >> 4, zCoord >> 4));
+				ForgeChunkManager.releaseTicket(ticket);
 			}
 		}
 
