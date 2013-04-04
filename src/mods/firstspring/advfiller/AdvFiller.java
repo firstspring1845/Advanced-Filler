@@ -43,7 +43,6 @@ public class AdvFiller {
 	public static boolean removeModeDrop;
 	public static boolean recipeHarder;
 	public static boolean breakEffect;
-	public static boolean useOldTexture;
 	
 	public static int advFillerID;
 	public static int redMarkerID;
@@ -71,8 +70,6 @@ public class AdvFiller {
 		recipeHarder = prop.getBoolean(true);
 		prop = cfg.get(Configuration.CATEGORY_GENERAL, "Break_Particles_and_Sounds", true);
 		breakEffect = prop.getBoolean(true);
-		prop = cfg.get(Configuration.CATEGORY_GENERAL, "Use_Old_Front_Texture", false);
-		useOldTexture = prop.getBoolean(true);
 		prop = cfg.get(Configuration.CATEGORY_GENERAL, "FillingID", "0,8,9,10,11,31,32,78");
 		String[] str = prop.getString().split(",");
 		try{
