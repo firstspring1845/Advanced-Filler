@@ -1,4 +1,4 @@
-package polarstar.advfiller;
+package mods.firstspring.advfiller;
 
 import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
@@ -11,6 +11,7 @@ import net.minecraft.network.packet.Packet250CustomPayload;
 import org.lwjgl.opengl.GL11;
 
 import buildcraft.api.core.Position;
+import cpw.mods.fml.common.network.PacketDispatcher;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
@@ -39,23 +40,23 @@ public class GuiScreenAdvFiller extends GuiScreen
 
 	public void initGui()
 	{
-		this.controlList.clear();
+		this.buttonList.clear();
 		byte cnt = 0;
 		byte m = -36; // 位置補正＋間隔取り
 		 String str[] = {"--", "-", "+", "++"};
 		for(int i = 3;i <= 22; i++){
-			this.controlList.add(new GuiButton(i, ((this.width - 248) / 2) + i * 12 + m, (this.height - 166) / 2 + 58, 12, 20, str[cnt]));
+			this.buttonList.add(new GuiButton(i, ((this.width - 248) / 2) + i * 12 + m, (this.height - 166) / 2 + 58, 12, 20, str[cnt]));
 			cnt++;
 			if(cnt > 3){
 				cnt = 0;
 				m += 2;
 			}
 		}
-		this.controlList.add(new GuiButton(1, ((this.width - 248) / 2) + 150, (this.height - 166) / 2 + 92, 48, 20, "Type"));
-		this.controlList.add(new GuiButton(2, ((this.width - 248) / 2) + 100, (this.height - 166) / 2 + 92, 48, 20, "Set"));
-		this.controlList.add(new GuiButton(23, ((this.width - 248) / 2) + 200, (this.height - 166) / 2 + 92, 48, 20, "Loop:" + getStateFromBoolean(loopMode)));
-		this.controlList.add(new GuiButton(24, ((this.width - 248) / 2) + 0, (this.height - 166) / 2 + 92, 48, 20, (iterate ? "ASCEND" : "DESCEND")));
-		this.controlList.add(new GuiButton(25, ((this.width - 248) / 2) + 50, (this.height - 166) / 2 + 92, 48, 20, "Drop:" + getStateFromBoolean(drop)));
+		this.buttonList.add(new GuiButton(1, ((this.width - 248) / 2) + 150, (this.height - 166) / 2 + 92, 48, 20, "Type"));
+		this.buttonList.add(new GuiButton(2, ((this.width - 248) / 2) + 100, (this.height - 166) / 2 + 92, 48, 20, "Set"));
+		this.buttonList.add(new GuiButton(23, ((this.width - 248) / 2) + 200, (this.height - 166) / 2 + 92, 48, 20, "Loop:" + getStateFromBoolean(loopMode)));
+		this.buttonList.add(new GuiButton(24, ((this.width - 248) / 2) + 0, (this.height - 166) / 2 + 92, 48, 20, (iterate ? "ASCEND" : "DESCEND")));
+		this.buttonList.add(new GuiButton(25, ((this.width - 248) / 2) + 50, (this.height - 166) / 2 + 92, 48, 20, "Drop:" + getStateFromBoolean(drop)));
 	}
 
 	/**
@@ -71,7 +72,7 @@ public class GuiScreenAdvFiller extends GuiScreen
 				type = 0;
 			break;
 		case 2:
-			this.mc.getSendQueue().addToSendQueue(createPacket());
+			PacketDispatcher.sendPacketToServer(createPacket());
 			break;
 		//Left
 		case 3:
@@ -210,7 +211,7 @@ public class GuiScreenAdvFiller extends GuiScreen
 		super.drawDefaultBackground();
 		int var1 = this.mc.renderEngine.getTexture("/polarstar/advfiller/gui/advfiller.png");
 		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-		this.mc.renderEngine.bindTexture(var1);
+		this.mc.renderEngine.bindTexture("/mods/firstspring/advfiller/textures/gui/advfiller.png");
 		int var2 = (this.width - 256) / 2;
 		int var3 = (this.height - 124) / 2;
 		this.drawTexturedModalRect(var2, var3, 0, 0, 256, 124);

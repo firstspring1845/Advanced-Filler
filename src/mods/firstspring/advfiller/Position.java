@@ -13,7 +13,7 @@
  * http://www.mod-buildcraft.com/MMPL-1.0.txt
  */
 
-package polarstar.advfiller;
+package mods.firstspring.advfiller;
 
 import net.minecraftforge.common.ForgeDirection;
 

@@ -1,4 +1,4 @@
-package polarstar.advfiller;
+package mods.firstspring.advfiller;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -9,39 +9,53 @@ import buildcraft.builders.TileMarker;
 
 public class TileRedMarker extends TileMarker implements IAreaProvider {
 	int xmin,ymin,zmin,xmax,ymax,zmax;
+	boolean hasPosition = false;
+
 	@Override
 	public int xMin() {
-		return xmin;
+		if(hasPosition)
+			return xmin;
+		return xCoord;
 	}
 
 	@Override
 	public int yMin() {
-		return ymin;
+		if(hasPosition)
+			return ymin;
+		return yCoord;
 	}
 
 	@Override
 	public int zMin() {
-		return zmin;
+		if(hasPosition)
+			return zmin;
+		return zCoord;
 	}
 
 	@Override
 	public int xMax() {
-		return xmax;
+		if(hasPosition)
+			return xmax;
+		return xCoord;
 	}
 
 	@Override
 	public int yMax() {
-		return ymax;
+		if(hasPosition)
+			return ymax;
+		return yCoord;
 	}
 
 	@Override
 	public int zMax() {
-		return zmax;
+		if(hasPosition)
+			return zmax;
+		return zCoord;
 	}
 
 	@Override
 	public void removeFromWorld() {
-		worldObj.setBlockWithNotify(xCoord, yCoord, zCoord, 0);
+		worldObj.setBlock(xCoord, yCoord, zCoord, 0);
 		AdvFiller.redMarker.dropBlockAsItem(worldObj, xCoord, yCoord, zCoord, 0, 0);
 	}
 	

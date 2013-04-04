@@ -1,4 +1,4 @@
-package polarstar.advfiller;
+package mods.firstspring.advfiller;
 
 import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
@@ -389,12 +389,12 @@ public class TileAdvFiller extends TileMachine implements IPowerReceptor {
 		powerProvider.useEnergy(25, 25, true);
 		if(removeListIterator.hasNext()){
 			Position pos = (Position)removeListIterator.next();
-			worldObj.setBlockWithNotify(pos.x, pos.y, pos.z, 0);
+			worldObj.setBlock(pos.x, pos.y, pos.z, 0);
 			return;
 		}
 		if(frameBuildListIterator.hasNext()){
 			Position pos = (Position)frameBuildListIterator.next();
-			worldObj.setBlockWithNotify(pos.x, pos.y, pos.z, BuildCraftFactory.frameBlock.blockID);
+			worldObj.setBlock(pos.x, pos.y, pos.z, BuildCraftFactory.frameBlock.blockID, 0, 3);
 			return;
 		}
 		calculateFrame();
@@ -438,7 +438,7 @@ public class TileAdvFiller extends TileMachine implements IPowerReceptor {
 			if(AdvFiller.breakEffect)
 				//クァーリーよりコピペ
 				worldObj.playAuxSFXAtEntity(null, 2001, pos.x, pos.y, pos.z, (worldObj.getBlockId(pos.x, pos.y, pos.z) + (worldObj.getBlockMetadata(pos.x, pos.y, pos.z) << 12)));
-			worldObj.setBlockWithNotify(pos.x, pos.y, pos.z, 0);
+			worldObj.setBlock(pos.x, pos.y, pos.z, 0);
 			if (stacks == null || stacks.isEmpty())
 				return;
 			for (ItemStack stack : stacks) {
@@ -537,7 +537,7 @@ public class TileAdvFiller extends TileMachine implements IPowerReceptor {
 				return;
 			Block.blocksList[id].dropBlockAsItem(worldObj, x, y, z, meta, 0);
 		}
-		worldObj.setBlockWithNotify(x, y, z, 0);
+		worldObj.setBlock(x, y, z, 0);
 	}
 	
 	//FillingMode

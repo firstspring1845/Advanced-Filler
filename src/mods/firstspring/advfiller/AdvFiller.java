@@ -1,12 +1,10 @@
-package polarstar.advfiller;
+package mods.firstspring.advfiller;
 
-import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
-import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.ChunkCoordIntPair;
@@ -19,6 +17,7 @@ import net.minecraftforge.common.Property;
 import buildcraft.BuildCraftBuilders;
 import buildcraft.BuildCraftCore;
 import buildcraft.BuildCraftFactory;
+import buildcraft.core.CreativeTabBuildCraft;
 
 import com.google.common.collect.Lists;
 
@@ -32,7 +31,7 @@ import cpw.mods.fml.common.network.NetworkMod;
 import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.common.registry.LanguageRegistry;
 
-@Mod(modid="AdvFiller", name="Advanced Filler", version="Build 11", dependencies = "required-after:BuildCraft|Core;required-after:BuildCraft|Builders")
+@Mod(modid="AdvFiller", name="Advanced Filler", version="Build 12", dependencies = "required-after:BuildCraft|Core;required-after:BuildCraft|Builders")
 @NetworkMod(channels = {"advfiller_client", "advfiller_server"}, clientSideRequired=true, serverSideRequired=false, packetHandler = PacketHandler.class)
 public class AdvFiller {
 	@Instance("AdvFiller")
@@ -75,7 +74,7 @@ public class AdvFiller {
 		prop = cfg.get(Configuration.CATEGORY_GENERAL, "Use_Old_Front_Texture", false);
 		useOldTexture = prop.getBoolean(true);
 		prop = cfg.get(Configuration.CATEGORY_GENERAL, "FillingID", "0,8,9,10,11,31,32,78");
-		String[] str = prop.value.split(",");
+		String[] str = prop.getString().split(",");
 		try{
 		for(String s : str)
 			fillingList.add(Integer.parseInt(s));
@@ -121,15 +120,12 @@ public class AdvFiller {
 	@Init
 	public void load(FMLInitializationEvent event){
 		ForgeChunkManager.setForcedChunkLoadingCallback(this, new AdvFillerChunkloadCallback());
-		CreativeTabs tab;
-		tab = getBuildCraftTab();
-		CommonProxy.proxy.loadTexture();
-		advFiller = new BlockAdvFiller(advFillerID, Material.iron).setCreativeTab(tab).setBlockName("advfiller");
+		advFiller = new BlockAdvFiller(advFillerID, Material.iron).setCreativeTab(CreativeTabBuildCraft.tabBuildCraft).setUnlocalizedName("advfiller");
 		GameRegistry.registerBlock(advFiller, "advfiller");
 		GameRegistry.registerTileEntity(TileAdvFiller.class, "AdvancedFiller");
 		LanguageRegistry.addName(advFiller, "Advanced Filler");
 		LanguageRegistry.instance().addNameForObject(advFiller, "ja_JP", "フィラー改");
-		redMarker = new BlockRedMarker(redMarkerID).setCreativeTab(tab).setBlockName("redmarker");
+		redMarker = new BlockRedMarker(redMarkerID).setCreativeTab(CreativeTabBuildCraft.tabBuildCraft).setUnlocalizedName("redmarker");
 		GameRegistry.registerBlock(redMarker, "redmarker");
 		GameRegistry.registerTileEntity(TileRedMarker.class, "RedMarker");
 		LanguageRegistry.addName(redMarker, "Transformation Marker");
@@ -155,20 +151,6 @@ public class AdvFiller {
 																		"M",
 																		'R', Item.redstone,
 																		'M', BuildCraftBuilders.markerBlock});
-	}
-	
-	@Deprecated
-	public CreativeTabs getBuildCraftTab(){
-		CreativeTabs t;
-		ClassLoader loader = Thread.currentThread().getContextClassLoader();
-		try{
-			Class<?> clas = loader.loadClass("buildcraft.core.CreativeTabBuildCraft");
-			Field f = clas.getField("tabBuildCraft");
-			t = (CreativeTabs)f.get(null);
-		}catch(Exception e){
-			t = CreativeTabs.tabRedstone;
-		}
-		return t;
 	}
 
 }

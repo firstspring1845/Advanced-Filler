@@ -1,4 +1,4 @@
-package polarstar.advfiller;
+package mods.firstspring.advfiller;
 
 import net.minecraftforge.common.ForgeChunkManager;
 import net.minecraftforge.common.ForgeChunkManager.Type;

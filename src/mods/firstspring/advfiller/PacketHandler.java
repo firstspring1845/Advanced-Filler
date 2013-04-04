@@ -1,4 +1,4 @@
-package polarstar.advfiller;
+package mods.firstspring.advfiller;
 
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.network.INetworkManager;
