@@ -73,11 +73,11 @@ public class TileAdvFiller extends TileMachine implements IPowerReceptor {
 		powerProvider.configure(20, 1, 1000, 25, 1000);
 		powerProvider.configurePowerPerdition(0, 100);
 		//configure for quarry mode
-		left = 4;
-		right = 4;
+		left = 5;
+		right = 5;
 		up = 0;
 		down = 0;
-		forward = 8;
+		forward = 10;
 		type = 0;
 	}
 	
