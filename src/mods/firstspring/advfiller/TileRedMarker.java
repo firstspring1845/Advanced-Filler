@@ -90,8 +90,10 @@ public class TileRedMarker extends TileMarker implements IAreaProvider {
 		tile[4] = worldObj.getBlockTileEntity(xCoord, yCoord, zCoord+1);
 		tile[5] = worldObj.getBlockTileEntity(xCoord, yCoord, zCoord-1);
 		for(TileEntity tileBuf:tile)
-			if(tileBuf != null)
+			if(tileBuf != null){
 				list.add(tileBuf);
+				hasPosition = true;
+			}
 		return list;
 	}
 
