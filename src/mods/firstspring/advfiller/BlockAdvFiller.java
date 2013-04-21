@@ -38,10 +38,9 @@ public class BlockAdvFiller extends BlockContainer {
 	@SideOnly(Side.CLIENT)
 	@SuppressWarnings("all")
 	public Icon getBlockTexture(IBlockAccess iblockaccess, int i, int j, int k, int l) {
-		int m = iblockaccess.getBlockMetadata(i, j, k);
-
 		if (iblockaccess == null)
-			return getBlockTextureFromSideAndMetadata(i, m);
+			return getIcon(0, 0);
+		int m = iblockaccess.getBlockMetadata(i, j, k);
 
 		TileEntity tile = iblockaccess.getBlockTileEntity(i, j, k);
 
@@ -54,12 +53,12 @@ public class BlockAdvFiller extends BlockContainer {
 					return textureFrontOn;
 			}
 		}
-		return getBlockTextureFromSideAndMetadata(l, m);
+		return getIcon(l, m);
 	}
 	
 	@Override
 	@SideOnly(Side.CLIENT)
-	public Icon getBlockTextureFromSideAndMetadata(int i, int j) {
+	public Icon getIcon(int i, int j) {
 		// If no metadata is set, then this is an icon.
 		if (j == 0 && i == 3)
 			return textureFrontOn;
