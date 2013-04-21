@@ -353,7 +353,7 @@ public class TileAdvFiller extends TileMachine implements IPowerReceptor {
 		frameBuildList = new ArrayList();
 		removeList = new ArrayList();
 		fromY = (int)yCoord;
-		toY = (int)yCoord + 5;
+		toY = (int)yCoord + 4;
 		if(toY > 255){
 			finished = true;
 			return;
