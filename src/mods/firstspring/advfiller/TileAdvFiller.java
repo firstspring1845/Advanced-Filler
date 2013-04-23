@@ -3,6 +3,7 @@ package mods.firstspring.advfiller;
 import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Set;
@@ -65,7 +66,7 @@ public class TileAdvFiller extends TileMachine implements IPowerReceptor {
 	List<Position> quarryList;
 	ListIterator quarryListIterator;
 	//used Quarry Mode and Flatten Mode
-	List<Position> ignoreCoordList;
+	HashSet<Coord> ignoreCoordSet;
 	ForgeDirection orient;
 	
 	public TileAdvFiller() {
@@ -211,7 +212,7 @@ public class TileAdvFiller extends TileMachine implements IPowerReceptor {
 		switch(type){
 		case 0:
 			frameCreated = false;
-			ignoreCoordList = new ArrayList();
+			ignoreCoordSet = new HashSet();
 			calculateFrame();
 			createQuarryList();
 			break;
@@ -418,11 +419,10 @@ public class TileAdvFiller extends TileMachine implements IPowerReceptor {
 	}
 	
 	public boolean checkBreakable(int x, int y, int z){
-		for(Position pos : ignoreCoordList)
-			if(x == pos.x && z == pos.z)
-				return false;
+		if(ignoreCoordSet.contains(new Coord(x, z)))
+			return false;
 		if(!BlockUtil.canChangeBlock(worldObj, x, y, z)){
-			ignoreCoordList.add(new Position(x,y,z));
+			ignoreCoordSet.add(new Coord(x, z));
 			return false;
 		}
 		return true;
@@ -609,32 +609,35 @@ public class TileAdvFiller extends TileMachine implements IPowerReceptor {
 	//FlattenMode
 	
 	public void createFlattenList(){
+		long time = System.currentTimeMillis();
 		removeList = new ArrayList();
 		fillList = new ArrayList();
 		for(int y = yCoord; y <= 255; y++)
 			for(int x = fromX; x <= toX; x++)
-				for(int z = fromZ; z <= toZ; z++)
-					if(BlockUtil.canChangeBlock(worldObj, x, y, z) && worldObj.getBlockId(x, y, z) != 0)
+				for(int z = fromZ; z <= toZ; z++){
+					int blockID = worldObj.getBlockId(x, y, z);
+					if(BlockUtil.canChangeBlock(blockID, worldObj, x, y, z) && blockID != 0)
 						removeList.add(new Position(x,y,z));
+				}
+		System.out.println(System.currentTimeMillis() - time);
 		removeListIterator = removeList.listIterator();
-		ignoreCoordList = new ArrayList();
+		ignoreCoordSet = new HashSet();
 		for(int y = yCoord - 1; y > 0; y--)
 			for(int x = fromX; x <= toX; x++)
 				for(int z = fromZ; z <= toZ; z++)
-					if(!isIgnoreCoord(x, z)){
+					if(true){
 						if(AdvFiller.fillingList.contains(worldObj.getBlockId(x, y, z)))
 							fillList.add(new Position(x,y,z));
 						else
-							ignoreCoordList.add(new Position(x,y,z));
+							ignoreCoordSet.add(new Coord(x,z));
 					}
 		fillListIterator = fillList.listIterator(fillList.size());
+		System.out.println(System.currentTimeMillis() - time);
 	}
 	
 	public boolean isIgnoreCoord(int x, int z){
-		for(Position pos : ignoreCoordList){
-			if((int)pos.x == x && (int)pos.z == z)
-				return true;
-		}
+		if(ignoreCoordSet.contains(new Coord(x,z)))
+			return true;
 		return false;
 	}
 	
