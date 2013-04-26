@@ -48,6 +48,8 @@ public class AdvFiller {
 	public static int redMarkerID;
 	public static int loopTick;
 	public static int maxDistance;
+	public static int energyRate;
+	
 	
 	public static List<Integer> fillingList = new ArrayList();
 	
@@ -66,6 +68,8 @@ public class AdvFiller {
 		loopTick = prop.getInt();
 		prop = cfg.get(Configuration.CATEGORY_GENERAL, "Max_Distance", 64);
 		maxDistance = prop.getInt();
+		prop = cfg.get(Configuration.CATEGORY_GENERAL, "Energy_Usage_Rate", 25);
+		energyRate = prop.getInt();
 		prop = cfg.get(Configuration.CATEGORY_GENERAL, "Recipe_Harder", false);
 		recipeHarder = prop.getBoolean(true);
 		prop = cfg.get(Configuration.CATEGORY_GENERAL, "Break_Particles_and_Sounds", true);

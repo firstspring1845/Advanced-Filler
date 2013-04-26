@@ -49,6 +49,7 @@ public class TileAdvFiller extends TileMachine implements IPowerReceptor {
 	int type;//0 : Quarry Mode 1 : Remove Mode 2 : Filling Mode 3 : Flatten Mode 4 : Exclusive Remove Mode 5 : TofuBuild Mode
 	int fromX,fromY,fromZ,toX,toY,toZ;
 	int tick = 0;
+	int rate;
 	boolean initialized = false, disabled = false, finished = false;
 	boolean loopMode = false;
 	boolean doLoop = false;
@@ -70,6 +71,7 @@ public class TileAdvFiller extends TileMachine implements IPowerReceptor {
 	ForgeDirection orient;
 	
 	public TileAdvFiller() {
+		rate = AdvFiller.energyRate;
 		powerProvider = PowerFramework.currentFramework.createPowerProvider();
 		powerProvider.configure(20, 1, 1000, 25, 1000);
 		powerProvider.configurePowerPerdition(0, 100);
@@ -385,9 +387,9 @@ public class TileAdvFiller extends TileMachine implements IPowerReceptor {
 	}
 	
 	public void buildFrame(){
-		if(powerProvider.useEnergy(25, 25, false) != 25)
+		if(powerProvider.useEnergy(rate, rate, false) != rate)
 			return;
-		powerProvider.useEnergy(25, 25, true);
+		powerProvider.useEnergy(rate, rate, true);
 		if(removeListIterator.hasNext()){
 			Position pos = (Position)removeListIterator.next();
 			worldObj.setBlock(pos.x, pos.y, pos.z, 0);
@@ -429,9 +431,9 @@ public class TileAdvFiller extends TileMachine implements IPowerReceptor {
 	}
 	
 	public void dig(){
-		if(powerProvider.useEnergy(100, 100, false) != 100)
+		if(powerProvider.useEnergy(rate * 4, rate * 4, false) != rate * 4)
 			return;
-		powerProvider.useEnergy(100, 100, true);
+		powerProvider.useEnergy(rate * 4, rate * 4, true);
 		if(quarryListIterator.hasNext()){
 			Position pos = (Position)quarryListIterator.next();
 			List<ItemStack> stacks = BlockUtil.getItemStackFromBlock(worldObj, pos.x, pos.y, pos.z);
@@ -476,17 +478,17 @@ public class TileAdvFiller extends TileMachine implements IPowerReceptor {
 			for(int i = 0; i < 4; i++){
 				if(removeListIterator.hasNext()){
 					if(type == 1){
-						if(powerProvider.useEnergy(25, 25, false) != 25)
+						if(powerProvider.useEnergy(rate, rate, false) != rate)
 							return;
 					}
 					if(type == 4){
-						if(powerProvider.useEnergy(150, 150, false) != 150)
+						if(powerProvider.useEnergy(rate * 6, rate * 6, false) != rate * 6)
 							return;
 					}
 					if(type == 1)
-						powerProvider.useEnergy(25, 25, true);
+						powerProvider.useEnergy(rate, rate, true);
 					if(type == 4){
-						powerProvider.useEnergy(150, 150, true);
+						powerProvider.useEnergy(rate * 6, rate * 6, true);
 						i = 3;
 					}
 					pos = (Position)removeListIterator.next();
@@ -502,17 +504,17 @@ public class TileAdvFiller extends TileMachine implements IPowerReceptor {
 			for(int i = 0; i < 4; i++){
 				if(removeListIterator.hasPrevious()){
 					if(type == 1){
-						if(powerProvider.useEnergy(25, 25, false) != 25)
+						if(powerProvider.useEnergy(rate, rate, false) != rate)
 							return;
 					}
 					if(type == 4){
-						if(powerProvider.useEnergy(150, 150, false) != 150)
+						if(powerProvider.useEnergy(rate * 6, rate * 6, false) != rate * 6)
 							return;
 					}
 					if(type == 1)
-						powerProvider.useEnergy(25, 25, true);
+						powerProvider.useEnergy(rate, rate, true);
 					if(type == 4){
-						powerProvider.useEnergy(150, 150, true);
+						powerProvider.useEnergy(rate * 6, rate * 6, true);
 						i = 3;
 					}
 					pos = (Position)removeListIterator.previous();
@@ -555,11 +557,11 @@ public class TileAdvFiller extends TileMachine implements IPowerReceptor {
 		Position pos;
 		for(int i = 0; i < 4; i++){
 			if(fillListIterator.hasNext()){
-				if(powerProvider.useEnergy(25, 25, false) != 25)
+				if(powerProvider.useEnergy(rate, rate, false) != rate)
 					return;
 				pos = (Position)fillListIterator.next();
 				if(doFill(pos.x, pos.y, pos.z))
-						powerProvider.useEnergy(25, 25, true);
+						powerProvider.useEnergy(rate, rate, true);
 				else if(!loopMode){
 					fillListIterator.previous();
 					return;
@@ -645,9 +647,9 @@ public class TileAdvFiller extends TileMachine implements IPowerReceptor {
 		Position pos;
 		for(int i = 0; i < 4; i++){
 			if(removeListIterator.hasNext()){
-				if(powerProvider.useEnergy(25, 25, false) != 25)
+				if(powerProvider.useEnergy(rate, rate, false) != rate)
 					return;
-				powerProvider.useEnergy(25, 25, true);
+				powerProvider.useEnergy(rate, rate, true);
 				pos = (Position)removeListIterator.next();
 				doRemove(pos.x, pos.y, pos.z);
 				if(i == 3)//下に制御が行かないように
@@ -656,11 +658,11 @@ public class TileAdvFiller extends TileMachine implements IPowerReceptor {
 		}
 		for(int i = 0; i < 4; i++){
 			if(fillListIterator.hasPrevious()){
-				if(powerProvider.useEnergy(25, 25, false) != 25)
+				if(powerProvider.useEnergy(rate, rate, false) != rate)
 					return;
 				pos = (Position)fillListIterator.previous();
 				if(doFill(pos.x, pos.y, pos.z))
-					powerProvider.useEnergy(25, 25, true);
+					powerProvider.useEnergy(rate, rate, true);
 				else{
 					if(!loopMode){
 						fillListIterator.next();
