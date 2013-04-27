@@ -37,21 +37,21 @@ public class AdvFiller {
 	@Instance("AdvFiller")
 	public static AdvFiller instance;
 	
-	public static Block advFiller;
-	public static Block redMarker;
+	protected static Block advFiller;
+	protected static Block redMarker;
 	
-	public static boolean removeModeDrop;
-	public static boolean recipeHarder;
-	public static boolean breakEffect;
+	protected static boolean removeModeDrop;
+	protected static boolean recipeHarder;
+	protected static boolean breakEffect;
 	
-	public static int advFillerID;
-	public static int redMarkerID;
-	public static int loopTick;
-	public static int maxDistance;
-	public static int energyRate;
+	protected static int advFillerID;
+	protected static int redMarkerID;
+	protected static int loopTick;
+	protected static int maxDistance;
+	protected static int energyRate;
 	
 	
-	public static List<Integer> fillingList = new ArrayList();
+	protected static List<Integer> fillingList = new ArrayList();
 	
 	@PreInit
 	public void loadConfiguration(FMLPreInitializationEvent event){
