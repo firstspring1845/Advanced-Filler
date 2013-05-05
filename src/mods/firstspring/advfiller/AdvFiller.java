@@ -31,7 +31,7 @@ import cpw.mods.fml.common.network.NetworkMod;
 import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.common.registry.LanguageRegistry;
 
-@Mod(modid="AdvFiller", name="Advanced Filler", version="Build 13", dependencies = "required-after:BuildCraft|Core;required-after:BuildCraft|Builders")
+@Mod(modid="AdvFiller", name="Advanced Filler", version="Build 14", dependencies = "required-after:BuildCraft|Core;required-after:BuildCraft|Builders")
 @NetworkMod(channels = {"advfiller_client", "advfiller_server"}, clientSideRequired=true, serverSideRequired=false, packetHandler = PacketHandler.class)
 public class AdvFiller {
 	@Instance("AdvFiller")
