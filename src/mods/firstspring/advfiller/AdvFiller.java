@@ -1,6 +1,6 @@
 package mods.firstspring.advfiller;
 
-import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 
 import net.minecraft.block.Block;
@@ -50,8 +50,7 @@ public class AdvFiller {
 	protected static int maxDistance;
 	protected static int energyRate;
 	
-	
-	protected static List<Integer> fillingList = new ArrayList();
+	protected static HashSet<Integer> fillingSet = new HashSet();
 	
 	@PreInit
 	public void loadConfiguration(FMLPreInitializationEvent event){
@@ -78,7 +77,7 @@ public class AdvFiller {
 		String[] str = prop.getString().split(",");
 		try{
 		for(String s : str)
-			fillingList.add(Integer.parseInt(s));
+			fillingSet.add(Integer.parseInt(s));
 		}catch(NumberFormatException e){
 			throw new RuntimeException("Printed By Advanced Filler:Wrong Config Option Format : FillingID" + 
 										System.getProperty("line.separator") + 

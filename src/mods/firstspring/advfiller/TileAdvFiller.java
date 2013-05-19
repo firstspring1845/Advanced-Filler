@@ -548,7 +548,7 @@ public class TileAdvFiller extends TileMachine implements IPowerReceptor {
 		for(int y = fromY; y <= toY; y++)
 			for(int x = fromX; x <= toX; x++)
 				for(int z = fromZ; z <= toZ; z++)
-					if(AdvFiller.fillingList.contains(worldObj.getBlockId(x, y, z)))
+					if(AdvFiller.fillingSet.contains(worldObj.getBlockId(x, y, z)))
 						fillList.add(new Position(x,y,z));
 		fillListIterator = fillList.listIterator();
 	}
@@ -628,7 +628,7 @@ public class TileAdvFiller extends TileMachine implements IPowerReceptor {
 			for(int x = fromX; x <= toX; x++)
 				for(int z = fromZ; z <= toZ; z++)
 					if(true){
-						if(AdvFiller.fillingList.contains(worldObj.getBlockId(x, y, z)))
+						if(AdvFiller.fillingSet.contains(worldObj.getBlockId(x, y, z)))
 							fillList.add(new Position(x,y,z));
 						else
 							ignoreCoordSet.add(new Coord(x,z));
