@@ -371,12 +371,12 @@ public class TileAdvFiller extends TileMachine implements IPowerReceptor {
 				for(int z = fromZ; z <= toZ; z++){
 					if(checkFrame(x,y,z)){
 						if(worldObj.getBlockId(x, y, z) != BuildCraftFactory.frameBlock.blockID){
-							if(worldObj.getBlockId(x, y, z) != 0)
+							if(!AdvFiller.fillingSet.contains(worldObj.getBlockId(x, y, z)))
 								removeList.add(new Position(x,y,z));
 							frameBuildList.add(new Position(x,y,z));
 						}
 					}else{
-						if(worldObj.getBlockId(x, y, z) != 0)
+						if(!AdvFiller.fillingSet.contains(worldObj.getBlockId(x, y, z)))
 							removeList.add(new Position(x,y,z));
 					}
 				}
