@@ -45,6 +45,7 @@ public class TileAdvFiller extends TileMachine implements IPowerReceptor {
 	Ticket chunkTicket;
 	//used on chunkloading message
 	EntityPlayer player;
+	boolean doRender = false;
 	int left,right,up,down,forward;
 	int type;//0 : Quarry Mode 1 : Remove Mode 2 : Filling Mode 3 : Flatten Mode 4 : Exclusive Remove Mode 5 : TofuBuild Mode
 	int fromX,fromY,fromZ,toX,toY,toZ;
@@ -308,6 +309,18 @@ public class TileAdvFiller extends TileMachine implements IPowerReceptor {
 	@Override
 	public void updateEntity() {
 		super.updateEntity();
+		if(worldObj.isRemote && !AdvFiller.bcFrameRenderer){
+			//描画用エンティティがスポーンしてない場合はスポーンさせる
+			if(!this.doRender){
+				//描画フラグと共有
+				this.doRender = true;
+				EntityRendererFiller e = new EntityRendererFiller(worldObj, this);
+				//天候エフェクトのふり
+				worldObj.addWeatherEffect(e);
+				//e.setPosition());
+			}
+			return;
+		}
 		if(worldObj.isRemote)
 			return;
 		if(!initialized)
@@ -822,6 +835,7 @@ public class TileAdvFiller extends TileMachine implements IPowerReceptor {
 		}
 		//クライアント用
 		box.deleteLasers();
+		doRender = false;
 		super.invalidate();
 	}
 	

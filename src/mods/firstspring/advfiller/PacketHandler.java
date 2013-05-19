@@ -46,9 +46,16 @@ public class PacketHandler implements IPacketHandler {
 			TileEntity tile = world.getBlockTileEntity(tileX, tileY, tileZ);
 			if(tile instanceof TileAdvFiller){
 				TileAdvFiller filler = (TileAdvFiller)tile;
+				filler.fromX = minX;
+				filler.fromY = minY;
+				filler.fromZ = minZ;
+				filler.toX = maxX;
+				filler.toY = maxY;
+				filler.toZ = maxZ;
 				filler.box.deleteLasers();
 				filler.box.initialize(minX,minY,minZ,maxX,maxY,maxZ);
-				filler.box.createLasers(world, LaserKind.Stripes);
+				if(AdvFiller.bcFrameRenderer)
+					filler.box.createLasers(world, LaserKind.Stripes);
 				filler.setArea(left,right,up,down,forward,type);
 				filler.loopMode = loop;
 				filler.finished = finished;

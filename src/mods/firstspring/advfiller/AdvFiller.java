@@ -43,6 +43,7 @@ public class AdvFiller {
 	protected static boolean removeModeDrop;
 	protected static boolean recipeHarder;
 	protected static boolean breakEffect;
+	protected static boolean bcFrameRenderer;
 	
 	protected static int advFillerID;
 	protected static int redMarkerID;
@@ -73,6 +74,8 @@ public class AdvFiller {
 		recipeHarder = prop.getBoolean(true);
 		prop = cfg.get(Configuration.CATEGORY_GENERAL, "Break_Particles_and_Sounds", true);
 		breakEffect = prop.getBoolean(true);
+		prop = cfg.get(Configuration.CATEGORY_GENERAL, "Use_BuildCraft_Frame_Render", false);
+		bcFrameRenderer = prop.getBoolean(true);
 		prop = cfg.get(Configuration.CATEGORY_GENERAL, "FillingID", "0,8,9,10,11,31,32,78");
 		String[] str = prop.getString().split(",");
 		try{
@@ -120,6 +123,7 @@ public class AdvFiller {
 	@Init
 	public void load(FMLInitializationEvent event){
 		ForgeChunkManager.setForcedChunkLoadingCallback(this, new AdvFillerChunkloadCallback());
+		CommonProxy.proxy.registerRenderer();
 		advFiller = new BlockAdvFiller(advFillerID, Material.iron).setCreativeTab(CreativeTabBuildCraft.tabBuildCraft).setUnlocalizedName("advfiller");
 		GameRegistry.registerBlock(advFiller, "advfiller");
 		GameRegistry.registerTileEntity(TileAdvFiller.class, "AdvancedFiller");

@@ -19,4 +19,8 @@ public class CommonProxy {
 	boolean isServer(){
 		return true;
 	}
+	
+	void registerRenderer(){
+		
+	}
 }
