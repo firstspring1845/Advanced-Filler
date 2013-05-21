@@ -63,7 +63,6 @@ public class BuildCraftProxy {
 	public Box getBox(TileAdvFiller t){
 		Position p = new Position(t.xCoord, t.yCoord, t.zCoord);
 		if(!table.contains(t.dim, p)){
-			System.out.println("Created");
 			table.put(t.dim, p, new Box());
 		}
 		return table.get(t.dim, p);

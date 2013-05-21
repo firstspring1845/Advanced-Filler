@@ -127,7 +127,6 @@ public class Position {
 	public boolean equals(Object o){
 		if(o instanceof Position){
 			Position p = (Position)o;
-			System.out.println(p.x == x && p.y == y && p.z == z);
 			return p.x == x && p.y == y && p.z == z;
 		}
 		return false;
