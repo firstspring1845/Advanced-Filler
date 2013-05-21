@@ -8,6 +8,8 @@ import java.util.List;
 import java.util.ListIterator;
 import java.util.Set;
 
+import mods.firstspring.advfiller.lib.BlockLib;
+import mods.firstspring.advfiller.lib.BuildCraftProxy;
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
@@ -27,7 +29,6 @@ import buildcraft.api.power.IPowerProvider;
 import buildcraft.api.power.IPowerReceptor;
 import buildcraft.api.power.PowerFramework;
 import buildcraft.builders.TileMarker;
-import buildcraft.core.Box;
 import buildcraft.core.proxy.CoreProxy;
 import buildcraft.core.utils.BlockUtil;
 import buildcraft.core.utils.Utils;
@@ -41,7 +42,8 @@ import cpw.mods.fml.common.network.Player;
 public class TileAdvFiller extends TileMachine implements IPowerReceptor {
 	Thread initializeThread;
 	IPowerProvider powerProvider;
-	Box box = new Box();
+	public int dim;
+	boolean bcLoaded = BuildCraftProxy.loaded;
 	Ticket chunkTicket;
 	//used on chunkloading message
 	EntityPlayer player;
@@ -199,6 +201,7 @@ public class TileAdvFiller extends TileMachine implements IPowerReceptor {
 	
 	public void preInit(){
 		setDisable();
+		dim = worldObj.getWorldInfo().getDimension();
 		orient = ForgeDirection.values()[worldObj.getBlockMetadata(xCoord, yCoord, zCoord)].getOpposite();
 		if(orient == ForgeDirection.UP || orient == ForgeDirection.DOWN || orient == ForgeDirection.UNKNOWN){
 			return;
@@ -259,11 +262,13 @@ public class TileAdvFiller extends TileMachine implements IPowerReceptor {
 		toX = (int)to.x;
 		toY = (int)to.y;
 		toZ = (int)to.z;
-		box.initialize(fromX, fromY, fromZ, toX, toY, toZ);
+		if(bcLoaded)
+			BuildCraftProxy.proxy.getBox(this).initialize(fromX, fromY, fromZ, toX, toY, toZ);
 	}
 
 	public void setArea(){
-		box.reset();
+		if(bcLoaded)
+			BuildCraftProxy.proxy.getBox(this).reset();
 		Position pos1 = new Position(xCoord,yCoord,zCoord,orient);
 		pos1.moveForwards(1);
 		pos1.moveLeft(left);
@@ -378,12 +383,13 @@ public class TileAdvFiller extends TileMachine implements IPowerReceptor {
 			finished = true;
 			return;
 		}
-		box.initialize(fromX, fromY, fromZ, toX, toY, toZ);
+		if(bcLoaded)
+			BuildCraftProxy.proxy.getBox(this).initialize(fromX, fromY, fromZ, toX, toY, toZ);
 		for(int y = fromY; y <= toY; y++){
 			for(int x = fromX; x <= toX; x++){
 				for(int z = fromZ; z <= toZ; z++){
 					if(checkFrame(x,y,z)){
-						if(worldObj.getBlockId(x, y, z) != BuildCraftFactory.frameBlock.blockID){
+						if(worldObj.getBlockId(x, y, z) != BuildCraftProxy.getFrameBlockId()){
 							if(!AdvFiller.fillingSet.contains(worldObj.getBlockId(x, y, z)))
 								removeList.add(new Position(x,y,z));
 							frameBuildList.add(new Position(x,y,z));
@@ -444,12 +450,13 @@ public class TileAdvFiller extends TileMachine implements IPowerReceptor {
 	}
 	
 	public void dig(){
+		
 		if(powerProvider.useEnergy(rate * 4, rate * 4, false) != rate * 4)
 			return;
 		powerProvider.useEnergy(rate * 4, rate * 4, true);
 		if(quarryListIterator.hasNext()){
 			Position pos = (Position)quarryListIterator.next();
-			List<ItemStack> stacks = BlockUtil.getItemStackFromBlock(worldObj, pos.x, pos.y, pos.z);
+			List<ItemStack> stacks = BlockLib.getBlockDropped(worldObj, pos.x, pos.y, pos.z);
 			if(AdvFiller.breakEffect)
 				//クァーリーよりコピペ
 				worldObj.playAuxSFXAtEntity(null, 2001, pos.x, pos.y, pos.z, (worldObj.getBlockId(pos.x, pos.y, pos.z) + (worldObj.getBlockMetadata(pos.x, pos.y, pos.z) << 12)));
@@ -462,7 +469,7 @@ public class TileAdvFiller extends TileMachine implements IPowerReceptor {
 				if (stack.stackSize <= 0) {
 					continue;
 				}
-				Utils.addToRandomPipeEntry(this, ForgeDirection.UNKNOWN, stack);
+				BuildCraftProxy.addToRandomPipeEntry(this, ForgeDirection.UNKNOWN, stack);
 			}
 		}else{
 			finished = true;
@@ -834,7 +841,8 @@ public class TileAdvFiller extends TileMachine implements IPowerReceptor {
 			initializeThread.stop();
 		}
 		//クライアント用
-		box.deleteLasers();
+		if(bcLoaded)
+			BuildCraftProxy.proxy.getBox(this).deleteLasers();
 		doRender = false;
 		super.invalidate();
 	}
@@ -848,8 +856,8 @@ public class TileAdvFiller extends TileMachine implements IPowerReceptor {
 		ChunkCoordIntPair myChunk = new ChunkCoordIntPair(xCoord >> 4, zCoord >> 4);
 		chunks.add(myChunk);
 		ForgeChunkManager.forceChunk(this.chunkTicket, myChunk);
-		for (int chunkX = box.xMin >> 4; chunkX <= box.xMax >> 4; chunkX++) {
-			for (int chunkZ = box.zMin >> 4; chunkZ <= box.zMax >> 4; chunkZ++) {
+		for (int chunkX = fromX >> 4; chunkX <= toZ >> 4; chunkX++) {
+			for (int chunkZ = fromZ >> 4; chunkZ <= toZ >> 4; chunkZ++) {
 				ChunkCoordIntPair chunk = new ChunkCoordIntPair(chunkX, chunkZ);
 				ForgeChunkManager.forceChunk(this.chunkTicket, chunk);
 				chunks.add(chunk);

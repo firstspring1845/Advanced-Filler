@@ -122,5 +122,20 @@ public class Position {
 	public Position max(Position p) {
 		return new Position(p.x < x ? x : p.x, p.y < y ? y : p.y, p.z < z ? z : p.z);
 	}
+	
+	@Override
+	public boolean equals(Object o){
+		if(o instanceof Position){
+			Position p = (Position)o;
+			System.out.println(p.x == x && p.y == y && p.z == z);
+			return p.x == x && p.y == y && p.z == z;
+		}
+		return false;
+	}
+	
+	@Override
+	public int hashCode(){
+		return x * y * z;
+	}
 
 }

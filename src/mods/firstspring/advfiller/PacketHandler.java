@@ -1,5 +1,6 @@
 package mods.firstspring.advfiller;
 
+import mods.firstspring.advfiller.lib.BuildCraftProxy;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.network.INetworkManager;
 import net.minecraft.network.packet.Packet250CustomPayload;
@@ -52,10 +53,12 @@ public class PacketHandler implements IPacketHandler {
 				filler.toX = maxX;
 				filler.toY = maxY;
 				filler.toZ = maxZ;
-				filler.box.deleteLasers();
-				filler.box.initialize(minX,minY,minZ,maxX,maxY,maxZ);
-				if(AdvFiller.bcFrameRenderer)
-					filler.box.createLasers(world, LaserKind.Stripes);
+				if(filler.bcLoaded){
+					BuildCraftProxy.proxy.getBox(filler).deleteLasers();
+					BuildCraftProxy.proxy.getBox(filler).initialize(minX,minY,minZ,maxX,maxY,maxZ);
+					if(AdvFiller.bcFrameRenderer)
+						BuildCraftProxy.proxy.getBox(filler).createLasers(world, LaserKind.Stripes);
+				}
 				filler.setArea(left,right,up,down,forward,type);
 				filler.loopMode = loop;
 				filler.finished = finished;
