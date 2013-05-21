@@ -136,6 +136,7 @@ public class Position {
 	//hashCodeが一致する場合はequalsは一致してもしなくてもOK
 	//equalsで一致する場合は hashCode も「必ず」一致する必要があるぽよ。
 	//Hash系コレクションで使わないならまず大丈夫だけど。
+	//thanks to alalwww
 	@Override
 	public int hashCode(){
 		return x * y * z;
