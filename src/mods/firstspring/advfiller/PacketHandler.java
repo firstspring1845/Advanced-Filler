@@ -107,7 +107,8 @@ public class PacketHandler implements IPacketHandler {
 				filler.removeModeIteration = iterate;
 				filler.removeModeDrop = drop;
 				//止めても問題ないはず
-				filler.initializeThread.stop();
+				if(filler.initializeThread != null)
+					filler.initializeThread.stop();
 				filler.preInit();
 				world.markBlockForUpdate(x, y, z);
 			}

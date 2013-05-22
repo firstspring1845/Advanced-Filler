@@ -825,7 +825,8 @@ public class TileAdvFiller extends TileEntity implements IPowerReceptor {
 	public void invalidate() {
 		if(!worldObj.isRemote){
 			//止めても問題ないはず
-			initializeThread.stop();
+			if(initializeThread != null)
+				initializeThread.stop();
 		}
 		//クライアント用
 		if(bcLoaded)
