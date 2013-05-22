@@ -7,6 +7,8 @@ import mods.firstspring.advfiller.lib.BuildCraftProxy;
 import mods.firstspring.advfiller.lib.PneumaticPowerFramework;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
 import net.minecraft.world.ChunkCoordIntPair;
 import net.minecraft.world.World;
 import net.minecraftforge.common.Configuration;
@@ -42,6 +44,9 @@ public class AdvFiller {
 	public static boolean breakEffect;
 	public static boolean bcFrameRenderer;
 	
+	public static boolean vanillaRecipe;
+	public static boolean bcRecipe;
+	
 	public static int advFillerID;
 	public static int redMarkerID;
 	public static int loopTick;
@@ -73,6 +78,10 @@ public class AdvFiller {
 		breakEffect = prop.getBoolean(true);
 		prop = cfg.get(Configuration.CATEGORY_GENERAL, "Use_BuildCraft_Frame_Render", false);
 		bcFrameRenderer = prop.getBoolean(true);
+		prop = cfg.get(Configuration.CATEGORY_GENERAL, "Enable_Vanilla_Recipe", false);
+		vanillaRecipe = prop.getBoolean(true);
+		prop = cfg.get(Configuration.CATEGORY_GENERAL, "Enable_BuildCraft_Recipe", true);
+		bcRecipe = prop.getBoolean(true);
 		prop = cfg.get(Configuration.CATEGORY_GENERAL, "FillingID", "0,8,9,10,11,31,32,78");
 		String[] str = prop.getString().split(",");
 		try{
@@ -132,10 +141,14 @@ public class AdvFiller {
 			GameRegistry.registerTileEntity(TileRedMarker.class, "RedMarker");
 			LanguageRegistry.addName(redMarker, "Transformation Marker");
 			LanguageRegistry.instance().addNameForObject(redMarker, "ja_JP", "変換マーカー");
-			BuildCraftProxy.addRecipe();
+			if(bcRecipe)
+				BuildCraftProxy.addRecipe();
 		}
 		else
 			PowerFramework.currentFramework = new PneumaticPowerFramework();
+		if(!BuildCraftProxy.loaded || vanillaRecipe){
+			GameRegistry.addRecipe(new ItemStack(advFiller), new Object[]{"SSS","SPS","SSS", 'S', Block.cobblestone, 'P', Item.pickaxeIron});
+		}
 	}
 
 }
