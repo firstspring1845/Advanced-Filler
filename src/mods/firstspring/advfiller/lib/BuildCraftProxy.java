@@ -5,14 +5,23 @@ package mods.firstspring.advfiller.lib;
 import java.util.HashMap;
 import java.util.Map;
 
+import mods.firstspring.advfiller.AdvFiller;
 import mods.firstspring.advfiller.Position;
 import mods.firstspring.advfiller.TileAdvFiller;
 import net.minecraft.block.Block;
+import net.minecraft.creativetab.CreativeTabs;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeDirection;
+import buildcraft.BuildCraftBuilders;
+import buildcraft.BuildCraftCore;
 import buildcraft.BuildCraftFactory;
+import buildcraft.api.core.IAreaProvider;
+import buildcraft.builders.TileMarker;
 import buildcraft.core.Box;
+import buildcraft.core.CreativeTabBuildCraft;
 import buildcraft.core.utils.Utils;
 
 import com.google.common.base.Supplier;
@@ -21,6 +30,7 @@ import com.google.common.collect.Table;
 import com.google.common.collect.Tables;
 
 import cpw.mods.fml.common.Loader;
+import cpw.mods.fml.common.registry.GameRegistry;
 
 public class BuildCraftProxy {
 
@@ -47,6 +57,10 @@ public class BuildCraftProxy {
 		}
 
 	}
+	
+	public static ItemStack addToRandomInventory(ItemStack stack, World worldObj, int xCoord, int yCoord, int zCoord,ForgeDirection dir){
+		return Utils.addToRandomInventory(stack, worldObj, xCoord, yCoord, zCoord, dir);
+	}
 
 	public static void addToRandomPipeEntry(TileEntity tile, ForgeDirection orient, ItemStack stack){
 		if(!loaded)
@@ -66,6 +80,45 @@ public class BuildCraftProxy {
 			table.put(t.dim, p, new Box());
 		}
 		return table.get(t.dim, p);
+	}
+	
+	public static void removeMarker(IAreaProvider i){
+		if(i instanceof TileMarker)
+			((TileMarker)i).removeFromWorld();
+	}
+	
+	public static void addRecipe(){
+		if(AdvFiller.recipeHarder){
+			GameRegistry.addRecipe(new ItemStack(AdvFiller.advFiller, 1), new Object[]{	"M",
+																				"F",
+																				"Q",
+																				'M', BuildCraftBuilders.markerBlock,
+																				'F', BuildCraftBuilders.fillerBlock,
+																				'Q', BuildCraftFactory.quarryBlock});
+		}else{
+			GameRegistry.addRecipe(new ItemStack(AdvFiller.advFiller, 1), new Object[]{	"IFI",
+																				"GIG",
+																				"DPD",
+																				'I', BuildCraftCore.ironGearItem,
+																				'G', BuildCraftCore.goldGearItem,
+																				'D', BuildCraftCore.diamondGearItem,
+																				'F', BuildCraftBuilders.fillerBlock,
+																				'P', Item.pickaxeDiamond});
+		}
+		GameRegistry.addRecipe(new ItemStack(AdvFiller.redMarker), new Object[]{	"R",
+																		"M",
+																		'R', Item.redstone,
+																		'M', BuildCraftBuilders.markerBlock});
+	}
+	
+	public static CreativeTabs getTab(){
+		if(loaded)
+			return CreativeTabBuildCraft.tabBuildCraft;
+		return CreativeTabs.tabRedstone;
+	}
+	
+	public void registerRedMarker(){
+		
 	}
 
 }

@@ -20,26 +20,21 @@ import net.minecraft.network.packet.Packet250CustomPayload;
 import net.minecraft.network.packet.Packet3Chat;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.ChunkCoordIntPair;
+import net.minecraftforge.common.FakePlayerFactory;
 import net.minecraftforge.common.ForgeChunkManager;
 import net.minecraftforge.common.ForgeChunkManager.Ticket;
 import net.minecraftforge.common.ForgeDirection;
-import buildcraft.BuildCraftFactory;
 import buildcraft.api.core.IAreaProvider;
 import buildcraft.api.power.IPowerProvider;
 import buildcraft.api.power.IPowerReceptor;
 import buildcraft.api.power.PowerFramework;
-import buildcraft.builders.TileMarker;
-import buildcraft.core.proxy.CoreProxy;
-import buildcraft.core.utils.BlockUtil;
-import buildcraft.core.utils.Utils;
-import buildcraft.factory.TileMachine;
 
 import com.google.common.collect.Sets;
 
 import cpw.mods.fml.common.network.PacketDispatcher;
 import cpw.mods.fml.common.network.Player;
 
-public class TileAdvFiller extends TileMachine implements IPowerReceptor {
+public class TileAdvFiller extends TileEntity implements IPowerReceptor {
 	Thread initializeThread;
 	IPowerProvider powerProvider;
 	public int dim;
@@ -97,9 +92,8 @@ public class TileAdvFiller extends TileMachine implements IPowerReceptor {
 				a = (IAreaProvider)tile;
 			if (a != null) {
 				calculateMarker(a);
-				if (a instanceof TileMarker) {
-					((TileMarker) a).removeFromWorld();
-				}
+				if(bcLoaded)
+					BuildCraftProxy.removeMarker(a);
 			}
 		}
 	}
@@ -309,6 +303,10 @@ public class TileAdvFiller extends TileMachine implements IPowerReceptor {
 	@Override
 	public void doWork() {}
 	
+	public void processEnergy(){
+		if(worldObj.isBlockIndirectlyGettingPowered(xCoord, yCoord, zCoord))
+			this.powerProvider.receiveEnergy(Float.MAX_VALUE, ForgeDirection.UP);
+	}
 
 	
 	@Override
@@ -328,6 +326,7 @@ public class TileAdvFiller extends TileMachine implements IPowerReceptor {
 		}
 		if(worldObj.isRemote)
 			return;
+		processEnergy();
 		if(!initialized)
 			preInit();
 		if(disabled)
@@ -416,7 +415,7 @@ public class TileAdvFiller extends TileMachine implements IPowerReceptor {
 		}
 		if(frameBuildListIterator.hasNext()){
 			Position pos = (Position)frameBuildListIterator.next();
-			worldObj.setBlock(pos.x, pos.y, pos.z, BuildCraftFactory.frameBlock.blockID, 0, 3);
+			worldObj.setBlock(pos.x, pos.y, pos.z, BuildCraftProxy.getFrameBlockId(), 0, 3);
 			return;
 		}
 		calculateFrame();
@@ -431,7 +430,7 @@ public class TileAdvFiller extends TileMachine implements IPowerReceptor {
 			for(int x = fromX + 1 ; x <= toX - 1 ; x++){
 				for(int z = fromZ + 1 ; z <= toZ - 1 ; z++){
 					if(checkBreakable(x,y,z))
-						if(!BlockUtil.isSoftBlock(worldObj, x, y, z))
+						if(!AdvFiller.fillingSet.contains(worldObj.getBlockId(x, y, z)))
 							quarryList.add(new Position(x,y,z));
 				}
 			}
@@ -442,7 +441,7 @@ public class TileAdvFiller extends TileMachine implements IPowerReceptor {
 	public boolean checkBreakable(int x, int y, int z){
 		if(ignoreCoordSet.contains(new Coord(x, z)))
 			return false;
-		if(!BlockUtil.canChangeBlock(worldObj, x, y, z)){
+		if(!BlockLib.canChangeBlock(worldObj, x, y, z)){
 			ignoreCoordSet.add(new Coord(x, z));
 			return false;
 		}
@@ -464,9 +463,13 @@ public class TileAdvFiller extends TileMachine implements IPowerReceptor {
 			if (stacks == null || stacks.isEmpty())
 				return;
 			for (ItemStack stack : stacks) {
-				ItemStack added = Utils.addToRandomInventory(stack, worldObj, xCoord, yCoord, zCoord, ForgeDirection.UNKNOWN);
-				stack.stackSize -= added.stackSize;
-				if (stack.stackSize <= 0) {
+				if(bcLoaded){
+					ItemStack added = BuildCraftProxy.addToRandomInventory(stack, worldObj, xCoord, yCoord, zCoord, ForgeDirection.UNKNOWN);
+					stack.stackSize -= added.stackSize;
+				}
+				else
+					stack = BlockLib.insertStackToNearInventory(stack, this);
+				if (stack == null || stack.stackSize <= 0) {
 					continue;
 				}
 				BuildCraftProxy.addToRandomPipeEntry(this, ForgeDirection.UNKNOWN, stack);
@@ -484,7 +487,7 @@ public class TileAdvFiller extends TileMachine implements IPowerReceptor {
 		for(int y = fromY; y <= toY; y++)
 			for(int x = fromX; x <= toX; x++)
 				for(int z = fromZ; z <= toZ; z++)
-					if(BlockUtil.canChangeBlock(worldObj, x, y, z) && worldObj.getBlockId(x, y, z) != 0)
+					if(BlockLib.canChangeBlock(worldObj, x, y, z) && worldObj.getBlockId(x, y, z) != 0)
 						removeList.add(new Position(x,y,z));
 		if(this.removeModeIteration)
 			removeListIterator = removeList.listIterator();
@@ -608,7 +611,7 @@ public class TileAdvFiller extends TileMachine implements IPowerReceptor {
 		}
 		if(is == null)
 			return false;
-		boolean success = is.getItem().onItemUse(is, CoreProxy.proxy.getBuildCraftPlayer(worldObj), worldObj, x, y - 1, z, 1, 0.0f, 0.0f, 0.0f);
+		boolean success = is.getItem().onItemUse(is, FakePlayerFactory.getMinecraft(worldObj), worldObj, x, y - 1, z, 1, 0.0f, 0.0f, 0.0f);
 		if(is.stackSize < 1)
 			inv.setInventorySlotContents(stackslot, null);
 		return success;
@@ -638,7 +641,7 @@ public class TileAdvFiller extends TileMachine implements IPowerReceptor {
 			for(int x = fromX; x <= toX; x++)
 				for(int z = fromZ; z <= toZ; z++){
 					int blockID = worldObj.getBlockId(x, y, z);
-					if(BlockUtil.canChangeBlock(blockID, worldObj, x, y, z) && blockID != 0)
+					if(BlockLib.canChangeBlock(blockID, worldObj, x, y, z) && blockID != 0)
 						removeList.add(new Position(x,y,z));
 				}
 		System.out.println(System.currentTimeMillis() - time);
@@ -772,24 +775,8 @@ public class TileAdvFiller extends TileMachine implements IPowerReceptor {
 		PowerFramework.currentFramework.savePowerProvider(this, nbt);
 	}
 
-	@Override
 	public boolean isActive() {
 		return !this.disabled && !finished;
-	}
-
-	@Override
-	public boolean manageLiquids() {
-		return false;
-	}
-
-	@Override
-	public boolean manageSolids() {
-		return true;
-	}
-
-	@Override
-	public boolean allowActions() {
-		return false;
 	}
 	
 	@Override
@@ -868,5 +855,14 @@ public class TileAdvFiller extends TileMachine implements IPowerReceptor {
 					new Packet3Chat(String.format("[BUILDCRAFT ADDON : ADVFILLER] The filler at %d %d %d will keep %d chunks loaded", xCoord, yCoord, zCoord, chunks.size())),
 					(Player) player);
 		}
+	}
+	
+	@Override
+	public int powerRequest(ForgeDirection from) {
+		if (isActive())
+			return (int) Math.ceil(Math.min(getPowerProvider().getMaxEnergyReceived(), getPowerProvider().getMaxEnergyStored()
+					- getPowerProvider().getEnergyStored()));
+		else
+			return 0;
 	}
 }

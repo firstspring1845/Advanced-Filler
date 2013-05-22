@@ -8,12 +8,11 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Icon;
+import net.minecraft.util.MathHelper;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeDirection;
-import buildcraft.api.core.Position;
 import buildcraft.api.tools.IToolWrench;
-import buildcraft.core.utils.Utils;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
@@ -81,13 +80,28 @@ public class BlockAdvFiller extends BlockContainer {
 			return;
 		if(world.isRemote)
 			return;
-		ForgeDirection orientation = Utils.get2dOrientation(new Position(entityliving.posX, entityliving.posY, entityliving.posZ), new Position(i, j, k));
+		ForgeDirection orientation = getOrientation(MathHelper.wrapAngleTo180_float(entityliving.rotationYaw));
 		world.setBlockMetadataWithNotify(i, j, k, orientation.getOpposite().ordinal(), 3);
 		TileAdvFiller tile = (TileAdvFiller)world.getBlockTileEntity(i, j, k);
 		tile.player = (EntityPlayer)entityliving;
 		tile.orient = orientation;
 		tile.placed();
 		tile.preInit();
+	}
+	
+	public ForgeDirection getOrientation(float i){
+		if(i < 0)
+			i+=360;
+		System.out.println(i);
+		if(i > 135 && i < 225)
+			return ForgeDirection.NORTH;
+		if(i > 0 && i < 45 || i > 315)
+			return ForgeDirection.SOUTH;
+		if(i > 45 && i < 135)
+			return ForgeDirection.WEST;
+		if(i > 225 && i < 315)
+			return ForgeDirection.EAST;
+		return ForgeDirection.UNKNOWN;
 	}
 
 	@Override

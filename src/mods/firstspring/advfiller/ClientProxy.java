@@ -2,7 +2,6 @@ package mods.firstspring.advfiller;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.world.World;
-import buildcraft.api.core.Position;
 import cpw.mods.fml.client.FMLClientHandler;
 import cpw.mods.fml.client.registry.RenderingRegistry;
 

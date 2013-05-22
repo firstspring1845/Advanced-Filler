@@ -3,10 +3,10 @@ package mods.firstspring.advfiller;
 import java.util.HashSet;
 import java.util.List;
 
+import mods.firstspring.advfiller.lib.BuildCraftProxy;
+import mods.firstspring.advfiller.lib.PneumaticPowerFramework;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
 import net.minecraft.world.ChunkCoordIntPair;
 import net.minecraft.world.World;
 import net.minecraftforge.common.Configuration;
@@ -14,10 +14,7 @@ import net.minecraftforge.common.ForgeChunkManager;
 import net.minecraftforge.common.ForgeChunkManager.Ticket;
 import net.minecraftforge.common.ForgeChunkManager.Type;
 import net.minecraftforge.common.Property;
-import buildcraft.BuildCraftBuilders;
-import buildcraft.BuildCraftCore;
-import buildcraft.BuildCraftFactory;
-import buildcraft.core.CreativeTabBuildCraft;
+import buildcraft.api.power.PowerFramework;
 
 import com.google.common.collect.Lists;
 
@@ -31,27 +28,27 @@ import cpw.mods.fml.common.network.NetworkMod;
 import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.common.registry.LanguageRegistry;
 
-@Mod(modid="AdvFiller", name="Advanced Filler", version="Build 14", dependencies = "required-after:BuildCraft|Core;required-after:BuildCraft|Builders")
+@Mod(modid="AdvFiller", name="Advanced Filler", version="Build 14")
 @NetworkMod(channels = {"advfiller_client", "advfiller_server"}, clientSideRequired=true, serverSideRequired=false, packetHandler = PacketHandler.class)
 public class AdvFiller {
 	@Instance("AdvFiller")
 	public static AdvFiller instance;
 	
-	protected static Block advFiller;
-	protected static Block redMarker;
+	public static Block advFiller;
+	public static Block redMarker;
 	
-	protected static boolean removeModeDrop;
-	protected static boolean recipeHarder;
-	protected static boolean breakEffect;
-	protected static boolean bcFrameRenderer;
+	public static boolean removeModeDrop;
+	public static boolean recipeHarder;
+	public static boolean breakEffect;
+	public static boolean bcFrameRenderer;
 	
-	protected static int advFillerID;
-	protected static int redMarkerID;
-	protected static int loopTick;
-	protected static int maxDistance;
-	protected static int energyRate;
+	public static int advFillerID;
+	public static int redMarkerID;
+	public static int loopTick;
+	public static int maxDistance;
+	public static int energyRate;
 	
-	protected static HashSet<Integer> fillingSet = new HashSet();
+	public static HashSet<Integer> fillingSet = new HashSet();
 	
 	@PreInit
 	public void loadConfiguration(FMLPreInitializationEvent event){
@@ -124,37 +121,21 @@ public class AdvFiller {
 	public void load(FMLInitializationEvent event){
 		ForgeChunkManager.setForcedChunkLoadingCallback(this, new AdvFillerChunkloadCallback());
 		CommonProxy.proxy.registerRenderer();
-		advFiller = new BlockAdvFiller(advFillerID, Material.iron).setCreativeTab(CreativeTabBuildCraft.tabBuildCraft).setUnlocalizedName("advfiller");
+		advFiller = new BlockAdvFiller(advFillerID, Material.iron).setCreativeTab(BuildCraftProxy.getTab()).setUnlocalizedName("advfiller");
 		GameRegistry.registerBlock(advFiller, "advfiller");
 		GameRegistry.registerTileEntity(TileAdvFiller.class, "AdvancedFiller");
 		LanguageRegistry.addName(advFiller, "Advanced Filler");
 		LanguageRegistry.instance().addNameForObject(advFiller, "ja_JP", "フィラー改");
-		redMarker = new BlockRedMarker(redMarkerID).setCreativeTab(CreativeTabBuildCraft.tabBuildCraft).setUnlocalizedName("redmarker");
-		GameRegistry.registerBlock(redMarker, "redmarker");
-		GameRegistry.registerTileEntity(TileRedMarker.class, "RedMarker");
-		LanguageRegistry.addName(redMarker, "Transformation Marker");
-		LanguageRegistry.instance().addNameForObject(redMarker, "ja_JP", "変換マーカー");
-		if(recipeHarder){
-			GameRegistry.addRecipe(new ItemStack(advFiller, 1), new Object[]{	"M",
-																				"F",
-																				"Q",
-																				'M', BuildCraftBuilders.markerBlock,
-																				'F', BuildCraftBuilders.fillerBlock,
-																				'Q', BuildCraftFactory.quarryBlock});
-		}else{
-			GameRegistry.addRecipe(new ItemStack(advFiller, 1), new Object[]{	"IFI",
-																				"GIG",
-																				"DPD",
-																				'I', BuildCraftCore.ironGearItem,
-																				'G', BuildCraftCore.goldGearItem,
-																				'D', BuildCraftCore.diamondGearItem,
-																				'F', BuildCraftBuilders.fillerBlock,
-																				'P', Item.pickaxeDiamond});
+		if(BuildCraftProxy.loaded){
+			redMarker = new BlockRedMarker(redMarkerID).setCreativeTab(BuildCraftProxy.getTab()).setUnlocalizedName("redmarker");
+			GameRegistry.registerBlock(redMarker, "redmarker");
+			GameRegistry.registerTileEntity(TileRedMarker.class, "RedMarker");
+			LanguageRegistry.addName(redMarker, "Transformation Marker");
+			LanguageRegistry.instance().addNameForObject(redMarker, "ja_JP", "変換マーカー");
+			BuildCraftProxy.addRecipe();
 		}
-		GameRegistry.addRecipe(new ItemStack(redMarker), new Object[]{	"R",
-																		"M",
-																		'R', Item.redstone,
-																		'M', BuildCraftBuilders.markerBlock});
+		else
+			PowerFramework.currentFramework = new PneumaticPowerFramework();
 	}
 
 }
