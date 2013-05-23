@@ -1,5 +1,8 @@
 package mods.firstspring.advfiller;
 
+import ic2.api.Direction;
+import ic2.api.energy.tile.IEnergySink;
+
 import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
 import java.util.ArrayList;
@@ -34,7 +37,7 @@ import com.google.common.collect.Sets;
 import cpw.mods.fml.common.network.PacketDispatcher;
 import cpw.mods.fml.common.network.Player;
 
-public class TileAdvFiller extends TileEntity implements IPowerReceptor {
+public class TileAdvFiller extends TileEntity implements IPowerReceptor, IEnergySink {
 	Thread initializeThread;
 	IPowerProvider powerProvider;
 	public int dim;
@@ -865,5 +868,35 @@ public class TileAdvFiller extends TileEntity implements IPowerReceptor {
 					- getPowerProvider().getEnergyStored()));
 		else
 			return 0;
+	}
+
+	//IC2
+	
+	@Override
+	public boolean acceptsEnergyFrom(TileEntity emitter, Direction direction) {
+		return true;
+	}
+
+	@Override
+	public boolean isAddedToEnergyNet() {
+		return powerProvider != null;
+	}
+
+	@Override
+	public int demandsEnergy() {
+		return (int)((powerProvider.getMaxEnergyStored() - powerProvider.getEnergyStored()) * 2.5);
+	}
+
+	@Override
+	public int injectEnergy(Direction directionFrom, int amount) {
+		int requireEU = (int)((powerProvider.getMaxEnergyStored() - powerProvider.getEnergyStored()) * 2.5);
+		int injectMJ = (int)(Math.min(amount, requireEU) / 2.5);
+		powerProvider.receiveEnergy(injectMJ, ForgeDirection.UP);
+		return amount - (int)(injectMJ * 2.5);
+	}
+
+	@Override
+	public int getMaxSafeInput() {
+		return Integer.MAX_VALUE;
 	}
 }
