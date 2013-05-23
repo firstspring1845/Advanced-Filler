@@ -31,13 +31,15 @@ import buildcraft.api.core.IAreaProvider;
 import buildcraft.api.power.IPowerProvider;
 import buildcraft.api.power.IPowerReceptor;
 import buildcraft.api.power.PowerFramework;
+import buildcraft.api.transport.IPipeEntry;
+import buildcraft.api.transport.IPipedItem;
 
 import com.google.common.collect.Sets;
 
 import cpw.mods.fml.common.network.PacketDispatcher;
 import cpw.mods.fml.common.network.Player;
 
-public class TileAdvFiller extends TileEntity implements IPowerReceptor, IEnergySink {
+public class TileAdvFiller extends TileEntity implements IPowerReceptor, IEnergySink, IPipeEntry {
 	Thread initializeThread;
 	IPowerProvider powerProvider;
 	public int dim;
@@ -898,5 +900,20 @@ public class TileAdvFiller extends TileEntity implements IPowerReceptor, IEnergy
 	@Override
 	public int getMaxSafeInput() {
 		return Integer.MAX_VALUE;
+	}
+
+	//IPipeEntry
+	
+	@Override
+	public void entityEntering(ItemStack payload, ForgeDirection orientation) {
+	}
+
+	@Override
+	public void entityEntering(IPipedItem item, ForgeDirection orientation) {
+	}
+
+	@Override
+	public boolean acceptItems() {
+		return false;
 	}
 }
