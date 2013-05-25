@@ -11,10 +11,12 @@ package mods.firstspring.advfiller.lib;
 
 import buildcraft.api.power.PowerProvider;
 
-public class PneumaticPowerProvider extends PowerProvider {
+public class PneumaticPowerProvider extends PowerProvider
+{
 
 	@Override
-	public void configure(int latency, int minEnergyReceived, int maxEnergyReceived, int minActivationEnergy, int maxStoredEnergy) {
+	public void configure(int latency, int minEnergyReceived, int maxEnergyReceived, int minActivationEnergy, int maxStoredEnergy)
+	{
 		super.configure(latency, minEnergyReceived, maxEnergyReceived, minActivationEnergy, maxStoredEnergy);
 
 		this.latency = 0;

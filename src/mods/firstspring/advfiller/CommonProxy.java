@@ -3,24 +3,29 @@ package mods.firstspring.advfiller;
 import net.minecraft.world.World;
 import cpw.mods.fml.common.SidedProxy;
 
-public class CommonProxy {
-	//これが無いとサーバーが起動しないんでマルチで使えないんです
+public class CommonProxy
+{
+	// これが無いとサーバーが起動しないんでマルチで使えないんです
 	@SidedProxy(clientSide = "mods.firstspring.advfiller.ClientProxy", serverSide = "mods.firstspring.advfiller.CommonProxy")
 	public static CommonProxy proxy;
-	
-	World getWorld(){
+
+	World getWorld()
+	{
 		return null;
 	}
-		
-	void openGui(int x, int y, int z, int left, int right, int up, int down, int forward, int type, boolean loop, boolean iterate, boolean drop){
-		
+
+	void openGui(int x, int y, int z, int left, int right, int up, int down, int forward, int type, boolean loop, boolean iterate, boolean drop)
+	{
+
 	}
-	
-	boolean isServer(){
+
+	boolean isServer()
+	{
 		return true;
 	}
-	
-	void registerRenderer(){
-		
+
+	void registerRenderer()
+	{
+
 	}
 }

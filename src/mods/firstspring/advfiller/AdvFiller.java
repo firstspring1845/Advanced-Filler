@@ -30,33 +30,36 @@ import cpw.mods.fml.common.network.NetworkMod;
 import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.common.registry.LanguageRegistry;
 
-@Mod(modid="AdvFiller", name="Advanced Filler", version="Build 14")
-@NetworkMod(channels = {"advfiller_client", "advfiller_server"}, clientSideRequired=true, serverSideRequired=false, packetHandler = PacketHandler.class)
-public class AdvFiller {
+@Mod(modid = "AdvFiller", name = "Advanced Filler", version = "Build 14")
+@NetworkMod(channels =
+{ "advfiller_client", "advfiller_server" }, clientSideRequired = true, serverSideRequired = false, packetHandler = PacketHandler.class)
+public class AdvFiller
+{
 	@Instance("AdvFiller")
 	public static AdvFiller instance;
-	
+
 	public static Block advFiller;
 	public static Block redMarker;
-	
+
 	public static boolean removeModeDrop;
 	public static boolean recipeHarder;
 	public static boolean breakEffect;
 	public static boolean bcFrameRenderer;
-	
+
 	public static boolean vanillaRecipe;
 	public static boolean bcRecipe;
-	
+
 	public static int advFillerID;
 	public static int redMarkerID;
 	public static int loopTick;
 	public static int maxDistance;
 	public static int energyRate;
-	
+
 	public static HashSet<Integer> fillingSet = new HashSet();
-	
+
 	@PreInit
-	public void loadConfiguration(FMLPreInitializationEvent event){
+	public void loadConfiguration(FMLPreInitializationEvent event)
+	{
 		Configuration cfg = new Configuration(event.getSuggestedConfigurationFile());
 		cfg.load();
 		Property prop;
@@ -84,22 +87,25 @@ public class AdvFiller {
 		bcRecipe = prop.getBoolean(true);
 		prop = cfg.get(Configuration.CATEGORY_GENERAL, "FillingID", "0,8,9,10,11,31,32,78");
 		String[] str = prop.getString().split(",");
-		try{
-		for(String s : str)
-			fillingSet.add(Integer.parseInt(s));
-		}catch(NumberFormatException e){
-			throw new RuntimeException("Printed By Advanced Filler:Wrong Config Option Format : FillingID" + 
-										System.getProperty("line.separator") + 
-										"Advanced Fillerにより出力:FillingIDオプションの記述法が間違っています。");
+		try
+		{
+			for (String s : str)
+				fillingSet.add(Integer.parseInt(s));
+		} catch (NumberFormatException e)
+		{
+			throw new RuntimeException("Printed By Advanced Filler:Wrong Config Option Format : FillingID" + System.getProperty("line.separator") + "Advanced Fillerにより出力:FillingIDオプションの記述法が間違っています。");
 		}
 		cfg.save();
 	}
-	
-	//クァーリーよりコピペ、ワールドが読み込まれた時に範囲外のチャンクを読み込ませる
-	public class AdvFillerChunkloadCallback implements ForgeChunkManager.OrderedLoadingCallback {
+
+	// クァーリーよりコピペ、ワールドが読み込まれた時に範囲外のチャンクを読み込ませる
+	public class AdvFillerChunkloadCallback implements ForgeChunkManager.OrderedLoadingCallback
+	{
 		@Override
-		public void ticketsLoaded(List<Ticket> tickets, World world) {
-			for (Ticket ticket : tickets) {
+		public void ticketsLoaded(List<Ticket> tickets, World world)
+		{
+			for (Ticket ticket : tickets)
+			{
 				int xCoord = ticket.getModData().getInteger("xCoord");
 				int yCoord = ticket.getModData().getInteger("yCoord");
 				int zCoord = ticket.getModData().getInteger("zCoord");
@@ -109,15 +115,18 @@ public class AdvFiller {
 		}
 
 		@Override
-		public List<Ticket> ticketsLoaded(List<Ticket> tickets, World world, int maxTicketCount) {
+		public List<Ticket> ticketsLoaded(List<Ticket> tickets, World world, int maxTicketCount)
+		{
 			List<Ticket> validTickets = Lists.newArrayList();
-			for (Ticket ticket : tickets) {
+			for (Ticket ticket : tickets)
+			{
 				int xCoord = ticket.getModData().getInteger("xCoord");
 				int yCoord = ticket.getModData().getInteger("yCoord");
 				int zCoord = ticket.getModData().getInteger("zCoord");
-				
+
 				int blId = world.getBlockId(xCoord, yCoord, zCoord);
-				if (blId == AdvFiller.advFillerID) {
+				if (blId == AdvFiller.advFillerID)
+				{
 					validTickets.add(ticket);
 				}
 			}
@@ -125,9 +134,10 @@ public class AdvFiller {
 		}
 
 	}
-	
+
 	@Init
-	public void load(FMLInitializationEvent event){
+	public void load(FMLInitializationEvent event)
+	{
 		ForgeChunkManager.setForcedChunkLoadingCallback(this, new AdvFillerChunkloadCallback());
 		CommonProxy.proxy.registerRenderer();
 		advFiller = new BlockAdvFiller(advFillerID, Material.iron).setCreativeTab(BuildCraftProxy.getTab()).setUnlocalizedName("advfiller");
@@ -135,21 +145,22 @@ public class AdvFiller {
 		GameRegistry.registerTileEntity(TileAdvFiller.class, "AdvancedFiller");
 		LanguageRegistry.addName(advFiller, "Advanced Filler");
 		LanguageRegistry.instance().addNameForObject(advFiller, "ja_JP", "フィラー改");
-		if(BuildCraftProxy.loaded){
+		if (BuildCraftProxy.loaded)
+		{
 			redMarker = new BlockRedMarker(redMarkerID).setCreativeTab(BuildCraftProxy.getTab()).setUnlocalizedName("redmarker");
 			GameRegistry.registerBlock(redMarker, "redmarker");
 			GameRegistry.registerTileEntity(TileRedMarker.class, "RedMarker");
 			LanguageRegistry.addName(redMarker, "Transformation Marker");
 			LanguageRegistry.instance().addNameForObject(redMarker, "ja_JP", "変換マーカー");
-			if(bcRecipe)
+			if (bcRecipe)
 				BuildCraftProxy.addRecipe();
-		}
-		else
+		} else
 			PowerFramework.currentFramework = new PneumaticPowerFramework();
-		if(!BuildCraftProxy.loaded || vanillaRecipe){
-			GameRegistry.addRecipe(new ItemStack(advFiller), new Object[]{"SSS","SPS","SSS", 'S', Block.cobblestone, 'P', Item.pickaxeIron});
+		if (!BuildCraftProxy.loaded || vanillaRecipe)
+		{
+			GameRegistry.addRecipe(new ItemStack(advFiller), new Object[]
+			{ "SSS", "SPS", "SSS", 'S', Block.cobblestone, 'P', Item.pickaxeIron });
 		}
 	}
 
 }
-

@@ -32,93 +32,97 @@ import com.google.common.collect.Tables;
 import cpw.mods.fml.common.Loader;
 import cpw.mods.fml.common.registry.GameRegistry;
 
-public class BuildCraftProxy {
+public class BuildCraftProxy
+{
 
 	public static final boolean loaded = Loader.isModLoaded("BuildCraft|Core");
 
 	public static final BuildCraftProxy proxy = new BuildCraftProxy();
-	private HashMap<Integer,HashMap<Position,Box>> box;
-	private Table<Integer,Position,Box> table;
+	private HashMap<Integer, HashMap<Position, Box>> box;
+	private Table<Integer, Position, Box> table;
 
-	private BuildCraftProxy(){
+	private BuildCraftProxy()
+	{
 		Map<Integer, Map<Position, Box>> backingMap = Maps.newHashMap();
 		Supplier<Map<Position, Box>> factory = newMapFactory();
 		table = Tables.newCustomTable(backingMap, factory);
 	}
 
-	static <C, V> Supplier<Map<C, V>> newMapFactory() {
+	static <C, V> Supplier<Map<C, V>> newMapFactory()
+	{
 		return new MapFactory<C, V>();
 	}
 
-	static final class MapFactory<C, V> implements Supplier<Map<C, V>> {
+	static final class MapFactory<C, V> implements Supplier<Map<C, V>>
+	{
 
-		public Map<C, V> get() {
+		public Map<C, V> get()
+		{
 			return Maps.newHashMap();
 		}
 
 	}
-	
-	public static ItemStack addToRandomInventory(ItemStack stack, World worldObj, int xCoord, int yCoord, int zCoord,ForgeDirection dir){
+
+	public static ItemStack addToRandomInventory(ItemStack stack, World worldObj, int xCoord, int yCoord, int zCoord, ForgeDirection dir)
+	{
 		return Utils.addToRandomInventory(stack, worldObj, xCoord, yCoord, zCoord, dir);
 	}
 
-	public static void addToRandomPipeEntry(TileEntity tile, ForgeDirection orient, ItemStack stack){
-		if(!loaded)
+	public static void addToRandomPipeEntry(TileEntity tile, ForgeDirection orient, ItemStack stack)
+	{
+		if (!loaded)
 			return;
 		Utils.addToRandomPipeEntry(tile, ForgeDirection.UNKNOWN, stack);
 	}
 
-	public static int getFrameBlockId(){
-		if(loaded)
+	public static int getFrameBlockId()
+	{
+		if (loaded)
 			return BuildCraftFactory.frameBlock.blockID;
 		return Block.glass.blockID;
 	}
 
-	public Box getBox(TileAdvFiller t){
+	public Box getBox(TileAdvFiller t)
+	{
 		Position p = new Position(t.xCoord, t.yCoord, t.zCoord);
-		if(!table.contains(t.dim, p)){
+		if (!table.contains(t.dim, p))
+		{
 			table.put(t.dim, p, new Box());
 		}
 		return table.get(t.dim, p);
 	}
-	
-	public static void removeMarker(IAreaProvider i){
-		if(i instanceof TileMarker)
-			((TileMarker)i).removeFromWorld();
+
+	public static void removeMarker(IAreaProvider i)
+	{
+		if (i instanceof TileMarker)
+			((TileMarker) i).removeFromWorld();
 	}
-	
-	public static void addRecipe(){
-		if(AdvFiller.recipeHarder){
-			GameRegistry.addRecipe(new ItemStack(AdvFiller.advFiller, 1), new Object[]{	"M",
-																				"F",
-																				"Q",
-																				'M', BuildCraftBuilders.markerBlock,
-																				'F', BuildCraftBuilders.fillerBlock,
-																				'Q', BuildCraftFactory.quarryBlock});
-		}else{
-			GameRegistry.addRecipe(new ItemStack(AdvFiller.advFiller, 1), new Object[]{	"IFI",
-																				"GIG",
-																				"DPD",
-																				'I', BuildCraftCore.ironGearItem,
-																				'G', BuildCraftCore.goldGearItem,
-																				'D', BuildCraftCore.diamondGearItem,
-																				'F', BuildCraftBuilders.fillerBlock,
-																				'P', Item.pickaxeDiamond});
+
+	public static void addRecipe()
+	{
+		if (AdvFiller.recipeHarder)
+		{
+			GameRegistry.addRecipe(new ItemStack(AdvFiller.advFiller, 1), new Object[]
+			{ "M", "F", "Q", 'M', BuildCraftBuilders.markerBlock, 'F', BuildCraftBuilders.fillerBlock, 'Q', BuildCraftFactory.quarryBlock });
+		} else
+		{
+			GameRegistry.addRecipe(new ItemStack(AdvFiller.advFiller, 1), new Object[]
+			{ "IFI", "GIG", "DPD", 'I', BuildCraftCore.ironGearItem, 'G', BuildCraftCore.goldGearItem, 'D', BuildCraftCore.diamondGearItem, 'F', BuildCraftBuilders.fillerBlock, 'P', Item.pickaxeDiamond });
 		}
-		GameRegistry.addRecipe(new ItemStack(AdvFiller.redMarker), new Object[]{	"R",
-																		"M",
-																		'R', Item.redstone,
-																		'M', BuildCraftBuilders.markerBlock});
+		GameRegistry.addRecipe(new ItemStack(AdvFiller.redMarker), new Object[]
+		{ "R", "M", 'R', Item.redstone, 'M', BuildCraftBuilders.markerBlock });
 	}
-	
-	public static CreativeTabs getTab(){
-		if(loaded)
+
+	public static CreativeTabs getTab()
+	{
+		if (loaded)
 			return CreativeTabBuildCraft.tabBuildCraft;
 		return CreativeTabs.tabRedstone;
 	}
-	
-	public void registerRedMarker(){
-		
+
+	public void registerRedMarker()
+	{
+
 	}
 
 }

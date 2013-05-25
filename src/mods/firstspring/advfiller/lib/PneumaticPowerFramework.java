@@ -12,10 +12,12 @@ package mods.firstspring.advfiller.lib;
 import buildcraft.api.power.IPowerProvider;
 import buildcraft.api.power.PowerFramework;
 
-public class PneumaticPowerFramework extends PowerFramework {
+public class PneumaticPowerFramework extends PowerFramework
+{
 
 	@Override
-	public IPowerProvider createPowerProvider() {
+	public IPowerProvider createPowerProvider()
+	{
 		return new PneumaticPowerProvider();
 	}
 

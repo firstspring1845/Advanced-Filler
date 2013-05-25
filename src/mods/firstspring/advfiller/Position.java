@@ -17,34 +17,40 @@ package mods.firstspring.advfiller;
 
 import net.minecraftforge.common.ForgeDirection;
 
-public class Position {
+public class Position
+{
 
 	public int x, y, z;
 	public ForgeDirection orientation;
 
-	public Position(int ci, int cj, int ck) {
+	public Position(int ci, int cj, int ck)
+	{
 		x = ci;
 		y = cj;
 		z = ck;
 		orientation = ForgeDirection.UNKNOWN;
 	}
 
-	public Position(int ci, int cj, int ck, ForgeDirection corientation) {
+	public Position(int ci, int cj, int ck, ForgeDirection corientation)
+	{
 		x = ci;
 		y = cj;
 		z = ck;
 		orientation = corientation;
 	}
 
-	public Position(Position p) {
+	public Position(Position p)
+	{
 		x = p.x;
 		y = p.y;
 		z = p.z;
 		orientation = p.orientation;
 	}
 
-	public void moveRight(int step) {
-		switch (orientation) {
+	public void moveRight(int step)
+	{
+		switch (orientation)
+		{
 		case SOUTH:
 			x = x - step;
 			break;
@@ -61,12 +67,15 @@ public class Position {
 		}
 	}
 
-	public void moveLeft(int step) {
+	public void moveLeft(int step)
+	{
 		moveRight(-step);
 	}
 
-	public void moveForwards(int step) {
-		switch (orientation) {
+	public void moveForwards(int step)
+	{
+		switch (orientation)
+		{
 		case UP:
 			y = y + step;
 			break;
@@ -89,12 +98,15 @@ public class Position {
 		}
 	}
 
-	public void moveBackwards(int step) {
+	public void moveBackwards(int step)
+	{
 		moveForwards(-step);
 	}
 
-	public void moveUp(int step) {
-		switch (orientation) {
+	public void moveUp(int step)
+	{
+		switch (orientation)
+		{
 		case SOUTH:
 		case NORTH:
 		case EAST:
@@ -106,38 +118,45 @@ public class Position {
 
 	}
 
-	public void moveDown(int step) {
+	public void moveDown(int step)
+	{
 		moveUp(-step);
 	}
 
 	@Override
-	public String toString() {
+	public String toString()
+	{
 		return "{" + x + ", " + y + ", " + z + "}";
 	}
 
-	public Position min(Position p) {
+	public Position min(Position p)
+	{
 		return new Position(p.x > x ? x : p.x, p.y > y ? y : p.y, p.z > z ? z : p.z);
 	}
 
-	public Position max(Position p) {
+	public Position max(Position p)
+	{
 		return new Position(p.x < x ? x : p.x, p.y < y ? y : p.y, p.z < z ? z : p.z);
 	}
-	
+
 	@Override
-	public boolean equals(Object o){
-		if(o instanceof Position){
-			Position p = (Position)o;
+	public boolean equals(Object o)
+	{
+		if (o instanceof Position)
+		{
+			Position p = (Position) o;
 			return p.x == x && p.y == y && p.z == z;
 		}
 		return false;
 	}
-	
-	//hashCodeが一致する場合はequalsは一致してもしなくてもOK
-	//equalsで一致する場合は hashCode も「必ず」一致する必要があるぽよ。
-	//Hash系コレクションで使わないならまず大丈夫だけど。
-	//thanks to alalwww
+
+	// hashCodeが一致する場合はequalsは一致してもしなくてもOK
+	// equalsで一致する場合は hashCode も「必ず」一致する必要があるぽよ。
+	// Hash系コレクションで使わないならまず大丈夫だけど。
+	// thanks to alalwww
 	@Override
-	public int hashCode(){
+	public int hashCode()
+	{
 		return x * y * z;
 	}
 
