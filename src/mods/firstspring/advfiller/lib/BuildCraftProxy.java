@@ -13,7 +13,6 @@ import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeDirection;
 import buildcraft.BuildCraftBuilders;
 import buildcraft.BuildCraftCore;
@@ -61,11 +60,6 @@ public class BuildCraftProxy
 			return Maps.newHashMap();
 		}
 
-	}
-
-	public static ItemStack addToRandomInventory(ItemStack stack, World worldObj, int xCoord, int yCoord, int zCoord, ForgeDirection dir)
-	{
-		return Utils.addToRandomInventory(stack, worldObj, xCoord, yCoord, zCoord, dir);
 	}
 
 	public static void addToRandomPipeEntry(TileEntity tile, ForgeDirection orient, ItemStack stack)
