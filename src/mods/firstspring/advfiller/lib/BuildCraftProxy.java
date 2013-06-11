@@ -2,6 +2,7 @@
 
 package mods.firstspring.advfiller.lib;
 
+import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -13,6 +14,7 @@ import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeDirection;
 import buildcraft.BuildCraftBuilders;
 import buildcraft.BuildCraftCore;
@@ -30,6 +32,7 @@ import com.google.common.collect.Tables;
 
 import cpw.mods.fml.common.Loader;
 import cpw.mods.fml.common.registry.GameRegistry;
+import cpw.mods.fml.relauncher.ReflectionHelper;
 
 public class BuildCraftProxy
 {
@@ -118,5 +121,20 @@ public class BuildCraftProxy
 	{
 
 	}
+	
+	public static ItemStack addToRandomInventory(ItemStack stack, World worldObj, int xCoord, int yCoord, int zCoord, ForgeDirection dir)
+	{
+		try
+		{
+			Method m = ReflectionHelper.findMethod(Utils.class, (Utils)null, new String[]{"addToRandomInventory"}, ItemStack.class, World.class, int.class, int.class, int.class, ForgeDirection.class);
+			return (ItemStack)m.invoke(null, stack, worldObj, xCoord, yCoord, zCoord, dir);
+		}
+		catch(Exception e)
+		{
+
+		}
+
+		return Utils.addToRandomInventory(stack, worldObj, xCoord, yCoord, zCoord);
+	} 
 
 }

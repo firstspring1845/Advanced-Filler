@@ -517,6 +517,11 @@ public class TileAdvFiller extends TileEntity implements IPowerReceptor, IEnergy
 				return;
 			for (ItemStack stack : stacks)
 			{
+				if (bcLoaded)
+				{
+					ItemStack added = BuildCraftProxy.addToRandomInventory(stack, worldObj, xCoord, yCoord, zCoord, ForgeDirection.UNKNOWN);
+					stack.stackSize -= added.stackSize;
+				} else 
 				stack = BlockLib.insertStackToNearInventory(stack, this);
 				if (stack == null || stack.stackSize <= 0)
 				{
