@@ -1,6 +1,8 @@
 package mods.firstspring.advfiller;
 
 import ic2.api.Direction;
+import ic2.api.energy.event.EnergyTileLoadEvent;
+import ic2.api.energy.event.EnergyTileUnloadEvent;
 import ic2.api.energy.tile.IEnergySink;
 
 import java.io.ByteArrayOutputStream;
@@ -27,6 +29,7 @@ import net.minecraftforge.common.FakePlayerFactory;
 import net.minecraftforge.common.ForgeChunkManager;
 import net.minecraftforge.common.ForgeChunkManager.Ticket;
 import net.minecraftforge.common.ForgeDirection;
+import net.minecraftforge.common.MinecraftForge;
 import buildcraft.api.core.IAreaProvider;
 import buildcraft.api.power.IPowerProvider;
 import buildcraft.api.power.IPowerReceptor;
@@ -60,6 +63,7 @@ public class TileAdvFiller extends TileEntity implements IPowerReceptor, IEnergy
 	boolean doLoop = false;
 	boolean removeModeDrop = false;
 	boolean removeModeIteration = false;// false:descend true:ascend
+	boolean ic2EnergyNet = false;
 	Position from, to;
 	List<Position> removeList;
 	ListIterator removeListIterator;
@@ -222,6 +226,8 @@ public class TileAdvFiller extends TileEntity implements IPowerReceptor, IEnergy
 		setBox();
 		initializeThread = new Thread(new AdvFillerInitializeThread(this));
 		initializeThread.start();
+		MinecraftForge.EVENT_BUS.post(new EnergyTileLoadEvent(this));
+		ic2EnergyNet = true;
 		initialized = true;
 	}
 
@@ -941,6 +947,8 @@ public class TileAdvFiller extends TileEntity implements IPowerReceptor, IEnergy
 		if (bcLoaded)
 			BuildCraftProxy.proxy.getBox(this).deleteLasers();
 		doRender = false;
+		MinecraftForge.EVENT_BUS.post(new EnergyTileUnloadEvent(this));
+		ic2EnergyNet = false;
 		super.invalidate();
 	}
 
@@ -989,7 +997,8 @@ public class TileAdvFiller extends TileEntity implements IPowerReceptor, IEnergy
 	@Override
 	public boolean isAddedToEnergyNet()
 	{
-		return powerProvider != null;
+		//ネットワークに接続されているかを返す
+		return ic2EnergyNet;
 	}
 
 	@Override
