@@ -962,7 +962,7 @@ public class TileAdvFiller extends TileEntity implements IPowerReceptor, IEnergy
 		ChunkCoordIntPair myChunk = new ChunkCoordIntPair(xCoord >> 4, zCoord >> 4);
 		chunks.add(myChunk);
 		ForgeChunkManager.forceChunk(this.chunkTicket, myChunk);
-		for (int chunkX = fromX >> 4; chunkX <= toZ >> 4; chunkX++)
+		for (int chunkX = fromX >> 4; chunkX <= toX >> 4; chunkX++)
 		{
 			for (int chunkZ = fromZ >> 4; chunkZ <= toZ >> 4; chunkZ++)
 			{
