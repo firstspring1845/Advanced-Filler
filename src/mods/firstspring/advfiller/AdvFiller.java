@@ -161,7 +161,7 @@ public class AdvFiller
 				BuildCraftProxy.addRecipe();
 		} else
 			PowerFramework.currentFramework = new PneumaticPowerFramework();
-		if (!BuildCraftProxy.loaded || vanillaRecipe)
+		if (!(BuildCraftProxy.loaded || Loader.isModLoaded("IC2")) || vanillaRecipe)
 		{
 			GameRegistry.addRecipe(new ItemStack(advFiller), "SSS", "SPS", "SSS", 'S', Block.cobblestone, 'P', Item.pickaxeIron);
 		}
