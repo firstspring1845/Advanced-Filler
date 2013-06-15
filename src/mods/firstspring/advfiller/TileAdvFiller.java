@@ -346,7 +346,7 @@ public class TileAdvFiller extends TileEntity implements IPowerReceptor, IEnergy
 	public void updateEntity()
 	{
 		super.updateEntity();
-		if (worldObj.isRemote && !AdvFiller.bcFrameRenderer)
+		if (worldObj.isRemote && (!AdvFiller.bcFrameRenderer || !bcLoaded))
 		{
 			// 描画用エンティティがスポーンしてない場合はスポーンさせる
 			if (!this.doRender)
