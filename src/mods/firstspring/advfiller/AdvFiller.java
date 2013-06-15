@@ -54,6 +54,8 @@ public class AdvFiller
 	public static boolean vanillaRecipe;
 	public static boolean bcRecipe;
 	
+	public static boolean rsEnergy;
+	
 	public static int advFillerID;
 	public static int redMarkerID;
 	public static int loopTick;
@@ -90,6 +92,8 @@ public class AdvFiller
 		vanillaRecipe = prop.getBoolean(true);
 		prop = cfg.get(Configuration.CATEGORY_GENERAL, "Enable_BuildCraft_Recipe", true);
 		bcRecipe = prop.getBoolean(true);
+		prop = cfg.get(Configuration.CATEGORY_GENERAL, "Enable_Redstone_Energy", false);
+		rsEnergy = prop.getBoolean(true);
 		prop = cfg.get(Configuration.CATEGORY_GENERAL, "FillingID", "0,8,9,10,11,31,32,78");
 		String[] str = prop.getString().split(",");
 		try

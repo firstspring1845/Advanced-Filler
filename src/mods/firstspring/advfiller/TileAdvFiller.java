@@ -39,6 +39,7 @@ import buildcraft.api.transport.IPipedItem;
 
 import com.google.common.collect.Sets;
 
+import cpw.mods.fml.common.Loader;
 import cpw.mods.fml.common.network.PacketDispatcher;
 import cpw.mods.fml.common.network.Player;
 
@@ -338,8 +339,9 @@ public class TileAdvFiller extends TileEntity implements IPowerReceptor, IEnergy
 
 	public void processEnergy()
 	{
-		if (worldObj.isBlockIndirectlyGettingPowered(xCoord, yCoord, zCoord))
-			this.powerProvider.receiveEnergy(Float.MAX_VALUE, ForgeDirection.UP);
+		if(AdvFiller.rsEnergy || !(BuildCraftProxy.loaded || Loader.isModLoaded("IC2")))
+			if (worldObj.isBlockIndirectlyGettingPowered(xCoord, yCoord, zCoord))
+				this.powerProvider.receiveEnergy(Float.MAX_VALUE, ForgeDirection.UP);
 	}
 
 	@Override
