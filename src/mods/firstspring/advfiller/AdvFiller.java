@@ -1,5 +1,7 @@
 package mods.firstspring.advfiller;
 
+import ic2.api.item.Items;
+
 import java.util.HashSet;
 import java.util.List;
 
@@ -16,10 +18,12 @@ import net.minecraftforge.common.ForgeChunkManager;
 import net.minecraftforge.common.ForgeChunkManager.Ticket;
 import net.minecraftforge.common.ForgeChunkManager.Type;
 import net.minecraftforge.common.Property;
+import net.minecraftforge.oredict.OreDictionary;
 import buildcraft.api.power.PowerFramework;
 
 import com.google.common.collect.Lists;
 
+import cpw.mods.fml.common.Loader;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.Init;
 import cpw.mods.fml.common.Mod.Instance;
@@ -29,6 +33,7 @@ import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.network.NetworkMod;
 import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.common.registry.LanguageRegistry;
+import cpw.mods.fml.relauncher.ReflectionHelper;
 
 @Mod(modid = "AdvFiller", name = "Advanced Filler", version = "Build 14")
 @NetworkMod(channels =
@@ -48,7 +53,7 @@ public class AdvFiller
 
 	public static boolean vanillaRecipe;
 	public static boolean bcRecipe;
-
+	
 	public static int advFillerID;
 	public static int redMarkerID;
 	public static int loopTick;
@@ -158,8 +163,20 @@ public class AdvFiller
 			PowerFramework.currentFramework = new PneumaticPowerFramework();
 		if (!BuildCraftProxy.loaded || vanillaRecipe)
 		{
-			GameRegistry.addRecipe(new ItemStack(advFiller), new Object[]
-			{ "SSS", "SPS", "SSS", 'S', Block.cobblestone, 'P', Item.pickaxeIron });
+			GameRegistry.addRecipe(new ItemStack(advFiller), "SSS", "SPS", "SSS", 'S', Block.cobblestone, 'P', Item.pickaxeIron);
+		}
+		
+		if(Loader.isModLoaded("IC2"))
+		{
+			System.out.println("called");
+			ItemStack glass,alloy,laser,teleporter,miner;
+			glass = Items.getItem("glassFiberCableItem");
+			alloy = Items.getItem("advancedAlloy");
+			laser = Items.getItem("miningLaser");
+			teleporter = Items.getItem("teleporter");
+			miner = Items.getItem("miner");
+			laser.setItemDamage(OreDictionary.WILDCARD_VALUE);
+			GameRegistry.addRecipe(new ItemStack(advFiller), "ALA", "GTG","AMA", 'A', alloy, 'L', laser, 'G', glass, 'T', teleporter, 'M', miner);
 		}
 	}
 
