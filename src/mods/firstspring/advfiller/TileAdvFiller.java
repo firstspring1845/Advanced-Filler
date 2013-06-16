@@ -16,8 +16,10 @@ import java.util.Set;
 import mods.firstspring.advfiller.lib.BlockLib;
 import mods.firstspring.advfiller.lib.BuildCraftProxy;
 import net.minecraft.block.Block;
+import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.packet.Packet;
@@ -55,7 +57,7 @@ public class TileAdvFiller extends TileEntity implements IPowerReceptor, IEnergy
 	boolean doRender = false;
 	int left, right, up, down, forward;
 	int type;// 0 : Quarry Mode 1 : Remove Mode 2 : Filling Mode 3 : Flatten
-				// Mode 4 : Exclusive Remove Mode 5 : TofuBuild Mode
+	// Mode 4 : Exclusive Remove Mode 5 : TofuBuild Mode
 	int fromX, fromY, fromZ, toX, toY, toZ;
 	int tick = 0;
 	int rate;
@@ -237,6 +239,7 @@ public class TileAdvFiller extends TileEntity implements IPowerReceptor, IEnergy
 		this.tick = 0;
 		switch (type)
 		{
+		case 6:
 		case 0:
 			frameCreated = false;
 			ignoreCoordSet = new HashSet();
@@ -388,6 +391,8 @@ public class TileAdvFiller extends TileEntity implements IPowerReceptor, IEnergy
 			doFillMode();
 		if (type == 3)
 			doFlattenMode();
+		if (type == 6)
+			doシルクタッチクァリーモード();
 	}
 
 	// Quarry Mode
@@ -400,6 +405,16 @@ public class TileAdvFiller extends TileEntity implements IPowerReceptor, IEnergy
 			return;
 		}
 		dig();
+	}
+
+	public void doシルクタッチクァリーモード()
+	{
+		if (!frameCreated)
+		{
+			buildFrame();
+			return;
+		}
+		シルクタッチディグ();
 	}
 
 	public boolean checkFrame(int x, int y, int z)
@@ -530,7 +545,7 @@ public class TileAdvFiller extends TileEntity implements IPowerReceptor, IEnergy
 					ItemStack added = BuildCraftProxy.addToRandomInventory(stack, worldObj, xCoord, yCoord, zCoord, ForgeDirection.UNKNOWN);
 					stack.stackSize -= added.stackSize;
 				} else 
-				stack = BlockLib.insertStackToNearInventory(stack, this);
+					stack = BlockLib.insertStackToNearInventory(stack, this);
 				if (stack == null || stack.stackSize <= 0)
 				{
 					continue;
@@ -543,6 +558,76 @@ public class TileAdvFiller extends TileEntity implements IPowerReceptor, IEnergy
 			worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
 		}
 	}
+
+	public void シルクタッチディグ()
+	{
+		if (powerProvider.useEnergy(rate * 4, rate * 4, false) != rate * 4)
+			return;
+		powerProvider.useEnergy(rate * 4, rate * 4, true);
+		if (quarryListIterator.hasNext())
+		{
+			Position pos = (Position) quarryListIterator.next();
+			List<ItemStack> stacks = BlockLib.getBlockDropped(worldObj, pos.x, pos.y, pos.z);
+			if (AdvFiller.breakEffect)
+				// クァーリーよりコピペ
+				worldObj.playAuxSFXAtEntity(null, 2001, pos.x, pos.y, pos.z, (worldObj.getBlockId(pos.x, pos.y, pos.z) + (worldObj.getBlockMetadata(pos.x, pos.y, pos.z) << 12)));
+
+			if (Block.blocksList[worldObj.getBlockId(pos.x, pos.y, pos.z)].canSilkHarvest(worldObj, null, pos.x,pos.y,pos.z, worldObj.getBlockMetadata(pos.x, pos.y, pos.z)))
+			{
+				int j = 0;
+
+				if (worldObj.getBlockId(pos.x, pos.y, pos.z) >= 0 && worldObj.getBlockId(pos.x, pos.y, pos.z) < Item.itemsList.length && Item.itemsList[worldObj.getBlockId(pos.x, pos.y, pos.z)].getHasSubtypes())
+				{
+					j = worldObj.getBlockMetadata(pos.x, pos.y, pos.z);
+				}
+
+				ItemStack itemstack = new ItemStack(worldObj.getBlockId(pos.x, pos.y, pos.z), 1, j);
+
+				if (itemstack != null)
+				{
+
+					if (!this.worldObj.isRemote && this.worldObj.getGameRules().getGameRuleBooleanValue("doTileDrops"))
+					{
+						float f = 0.7F;
+						double d0 = (double)(this.worldObj.rand.nextFloat() * f) + (double)(1.0F - f) * 0.5D;
+						double d1 = (double)(this.worldObj.rand.nextFloat() * f) + (double)(1.0F - f) * 0.5D;
+						double d2 = (double)(this.worldObj.rand.nextFloat() * f) + (double)(1.0F - f) * 0.5D;
+						EntityItem entityitem = new EntityItem(this.worldObj, (double)pos.x + d0, (double)pos.y + d1, (double)pos.z + d2, itemstack);
+						entityitem.delayBeforeCanPickup = 10;
+						this.worldObj.spawnEntityInWorld(entityitem);
+					}
+				}
+			}
+			else
+			{
+				Block.blocksList[worldObj.getBlockId(pos.x, pos.y, pos.z)].dropBlockAsItem(this.worldObj, pos.x, pos.y, pos.z,worldObj.getBlockMetadata(pos.x, pos.y, pos.z),3);
+			}
+
+			worldObj.setBlock(pos.x, pos.y, pos.z, 0);
+
+			if (stacks == null || stacks.isEmpty())
+				return;
+			for (ItemStack stack : stacks)
+			{
+				if (bcLoaded)
+				{
+					ItemStack added = BuildCraftProxy.addToRandomInventory(stack, worldObj, xCoord, yCoord, zCoord, ForgeDirection.UNKNOWN);
+					stack.stackSize -= added.stackSize;
+				} else 
+					stack = BlockLib.insertStackToNearInventory(stack, this);
+				if (stack == null || stack.stackSize <= 0)
+				{
+					continue;
+				}
+				BuildCraftProxy.addToRandomPipeEntry(this, ForgeDirection.UNKNOWN, stack);
+			}
+		} else
+		{
+			finished = true;
+			worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
+		}
+	}
+
 
 	// RemoveMode
 
@@ -586,6 +671,10 @@ public class TileAdvFiller extends TileEntity implements IPowerReceptor, IEnergy
 						powerProvider.useEnergy(rate * 6, rate * 6, true);
 						i = 3;
 					}
+					
+					if (type == 6)
+						powerProvider.useEnergy(rate, rate, true);
+					
 					pos = (Position) removeListIterator.next();
 					doRemove(pos.x, pos.y, pos.z);
 
