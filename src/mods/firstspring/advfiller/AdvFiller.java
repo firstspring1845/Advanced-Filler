@@ -35,7 +35,7 @@ import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.common.registry.LanguageRegistry;
 import cpw.mods.fml.relauncher.ReflectionHelper;
 
-@Mod(modid = "AdvFiller", name = "Advanced Filler", version = "Build 15")
+@Mod(modid = "AdvFiller", name = "Advanced Filler", version = "Build 16")
 @NetworkMod(channels =
 { "advfiller_client", "advfiller_server" }, clientSideRequired = true, serverSideRequired = false, packetHandler = PacketHandler.class)
 public class AdvFiller
@@ -176,7 +176,7 @@ public class AdvFiller
 			ItemStack glass,alloy,laser,teleporter,miner;
 			glass = Items.getItem("glassFiberCableItem");
 			alloy = Items.getItem("advancedAlloy");
-			laser = Items.getItem("miningLaser");
+			laser = Items.getItem("miningLaser").copy();
 			teleporter = Items.getItem("teleporter");
 			miner = Items.getItem("miner");
 			laser.setItemDamage(OreDictionary.WILDCARD_VALUE);
