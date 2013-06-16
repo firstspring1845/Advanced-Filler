@@ -71,7 +71,7 @@ public class GuiScreenAdvFiller extends GuiScreen
 		{
 		case 1:
 			type++;
-			if (type > 6)
+			if (type > 7)
 				type = 0;
 			break;
 		case 2:
@@ -281,7 +281,9 @@ public class GuiScreenAdvFiller extends GuiScreen
 		case 5:
 			return "TofuBuild Mode";
 		case 6:
-			return "シルクタッチアンド幸運";
+			return "シルクタッチアンド幸運のクァリーモード";
+		case 7:
+			return "ノーフレームシルクタッチアンド幸運のクァリーモード";
 		}
 		return "";
 	}

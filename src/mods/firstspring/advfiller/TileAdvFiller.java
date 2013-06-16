@@ -16,10 +16,8 @@ import java.util.Set;
 import mods.firstspring.advfiller.lib.BlockLib;
 import mods.firstspring.advfiller.lib.BuildCraftProxy;
 import net.minecraft.block.Block;
-import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.packet.Packet;
@@ -393,6 +391,8 @@ public class TileAdvFiller extends TileEntity implements IPowerReceptor, IEnergy
 			doFlattenMode();
 		if (type == 6)
 			doシルクタッチクァリーモード();
+		if (type == 7)
+			シルクタッチディグ();
 	}
 
 	// Quarry Mode
@@ -524,7 +524,6 @@ public class TileAdvFiller extends TileEntity implements IPowerReceptor, IEnergy
 
 	public void dig()
 	{
-
 		if (powerProvider.useEnergy(rate * 4, rate * 4, false) != rate * 4)
 			return;
 		powerProvider.useEnergy(rate * 4, rate * 4, true);
@@ -567,44 +566,11 @@ public class TileAdvFiller extends TileEntity implements IPowerReceptor, IEnergy
 		if (quarryListIterator.hasNext())
 		{
 			Position pos = (Position) quarryListIterator.next();
-			List<ItemStack> stacks = BlockLib.getBlockDropped(worldObj, pos.x, pos.y, pos.z);
+			List<ItemStack> stacks = BlockLib.getBlockSilkDropped(worldObj, pos.x, pos.y, pos.z);
 			if (AdvFiller.breakEffect)
 				// クァーリーよりコピペ
 				worldObj.playAuxSFXAtEntity(null, 2001, pos.x, pos.y, pos.z, (worldObj.getBlockId(pos.x, pos.y, pos.z) + (worldObj.getBlockMetadata(pos.x, pos.y, pos.z) << 12)));
-
-			if (Block.blocksList[worldObj.getBlockId(pos.x, pos.y, pos.z)].canSilkHarvest(worldObj, null, pos.x,pos.y,pos.z, worldObj.getBlockMetadata(pos.x, pos.y, pos.z)))
-			{
-				int j = 0;
-
-				if (worldObj.getBlockId(pos.x, pos.y, pos.z) >= 0 && worldObj.getBlockId(pos.x, pos.y, pos.z) < Item.itemsList.length && Item.itemsList[worldObj.getBlockId(pos.x, pos.y, pos.z)].getHasSubtypes())
-				{
-					j = worldObj.getBlockMetadata(pos.x, pos.y, pos.z);
-				}
-
-				ItemStack itemstack = new ItemStack(worldObj.getBlockId(pos.x, pos.y, pos.z), 1, j);
-
-				if (itemstack != null)
-				{
-
-					if (!this.worldObj.isRemote && this.worldObj.getGameRules().getGameRuleBooleanValue("doTileDrops"))
-					{
-						float f = 0.7F;
-						double d0 = (double)(this.worldObj.rand.nextFloat() * f) + (double)(1.0F - f) * 0.5D;
-						double d1 = (double)(this.worldObj.rand.nextFloat() * f) + (double)(1.0F - f) * 0.5D;
-						double d2 = (double)(this.worldObj.rand.nextFloat() * f) + (double)(1.0F - f) * 0.5D;
-						EntityItem entityitem = new EntityItem(this.worldObj, (double)pos.x + d0, (double)pos.y + d1, (double)pos.z + d2, itemstack);
-						entityitem.delayBeforeCanPickup = 10;
-						this.worldObj.spawnEntityInWorld(entityitem);
-					}
-				}
-			}
-			else
-			{
-				Block.blocksList[worldObj.getBlockId(pos.x, pos.y, pos.z)].dropBlockAsItem(this.worldObj, pos.x, pos.y, pos.z,worldObj.getBlockMetadata(pos.x, pos.y, pos.z),3);
-			}
-
 			worldObj.setBlock(pos.x, pos.y, pos.z, 0);
-
 			if (stacks == null || stacks.isEmpty())
 				return;
 			for (ItemStack stack : stacks)
