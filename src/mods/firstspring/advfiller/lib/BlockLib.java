@@ -27,6 +27,8 @@ public class BlockLib
 			ItemStack is = inv.getStackInSlot(i);
 			if (is == null)
 			{
+				if(! inv.isStackValidForSlot(i, stack))
+					continue;
 				inv.setInventorySlotContents(i, stack);
 				return null;
 			}
