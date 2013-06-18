@@ -75,10 +75,10 @@ public class BlockLib
 	
 	public static ArrayList<ItemStack> getBlockSilkDropped(World world, int x, int y, int z)
 	{
-		ArrayList<ItemStack> スタック = new ArrayList<ItemStack>();
+		ArrayList<ItemStack> stack = new ArrayList<ItemStack>();
 		
 		if(Block.blocksList[world.getBlockId(x,y,z)] == null)
-			return スタック;
+			return stack;
 			
 		if (Block.blocksList[world.getBlockId(x,y,z)].canSilkHarvest(world, null,x,y,z, world.getBlockMetadata(x,y,z)))
 		{
@@ -89,7 +89,7 @@ public class BlockLib
 				j = world.getBlockMetadata(x, y, z);
 			}
 			
-			スタック.add(new ItemStack(world.getBlockId(x, y, z), 1, j));
+			stack.add(new ItemStack(world.getBlockId(x, y, z), 1, j));
 		}
 		else
 		{
@@ -97,10 +97,10 @@ public class BlockLib
 
             for (ItemStack item : items)
             {
-            	スタック.add(item);
+            	stack.add(item);
             }
 		}
-		return スタック;
+		return stack;
 	}
 
 	public static boolean canChangeBlock(World world, int x, int y, int z)
