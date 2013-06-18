@@ -390,9 +390,9 @@ public class TileAdvFiller extends TileEntity implements IPowerReceptor, IEnergy
 		if (type == 3)
 			doFlattenMode();
 		if (type == 6)
-			doシルクタッチクァリーモード();
+			doSilkQuarryMode();
 		if (type == 7)
-			シルクタッチディグ();
+			silkdig();
 	}
 
 	// Quarry Mode
@@ -407,14 +407,14 @@ public class TileAdvFiller extends TileEntity implements IPowerReceptor, IEnergy
 		dig();
 	}
 
-	public void doシルクタッチクァリーモード()
+	public void doSilkQuarryMode()
 	{
 		if (!frameCreated)
 		{
 			buildFrame();
 			return;
 		}
-		シルクタッチディグ();
+		silkdig();
 	}
 
 	public boolean checkFrame(int x, int y, int z)
@@ -558,7 +558,7 @@ public class TileAdvFiller extends TileEntity implements IPowerReceptor, IEnergy
 		}
 	}
 
-	public void シルクタッチディグ()
+	public void silkdig()
 	{
 		if (powerProvider.useEnergy(rate * 4, rate * 4, false) != rate * 4)
 			return;
@@ -570,7 +570,7 @@ public class TileAdvFiller extends TileEntity implements IPowerReceptor, IEnergy
 			if (AdvFiller.breakEffect)
 				// クァーリーよりコピペ
 				worldObj.playAuxSFXAtEntity(null, 2001, pos.x, pos.y, pos.z, (worldObj.getBlockId(pos.x, pos.y, pos.z) + (worldObj.getBlockMetadata(pos.x, pos.y, pos.z) << 12)));
-			worldObj.setBlock(pos.x, pos.y, pos.z, 0);
+				worldObj.setBlock(pos.x, pos.y, pos.z, 0);
 			if (stacks == null || stacks.isEmpty())
 				return;
 			for (ItemStack stack : stacks)
@@ -1030,7 +1030,7 @@ public class TileAdvFiller extends TileEntity implements IPowerReceptor, IEnergy
 		}
 		if (player != null)
 		{
-			PacketDispatcher.sendPacketToPlayer(new Packet3Chat(String.format("[BUILDCRAFT ADDON : ADVFILLER] The filler at %d %d %d will keep %d chunks loaded", xCoord, yCoord, zCoord, chunks.size())), (Player) player);
+			PacketDispatcher.sendPacketToPlayer(new Packet3Chat(String.format("[ADVFILLER] The advfiller at %d %d %d will keep %d chunks loaded", xCoord, yCoord, zCoord, chunks.size())), (Player) player);
 		}
 	}
 

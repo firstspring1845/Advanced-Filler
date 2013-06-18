@@ -281,9 +281,9 @@ public class GuiScreenAdvFiller extends GuiScreen
 		case 5:
 			return "TofuBuild Mode";
 		case 6:
-			return "シルクタッチアンド幸運のクァリーモード";
+			return "SilkFortune Quarry Mode";
 		case 7:
-			return "ノーフレームシルクタッチアンド幸運のクァリーモード";
+			return "nonFrame SilkFortune Quarry Mode";
 		}
 		return "";
 	}
