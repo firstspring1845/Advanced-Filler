@@ -1030,7 +1030,7 @@ public class TileAdvFiller extends TileEntity implements IPowerReceptor, IEnergy
 		}
 		if (player != null)
 		{
-			PacketDispatcher.sendPacketToPlayer(new Packet3Chat(String.format("[BUILDCRAFT ADDON : ADVFILLER] The filler at %d %d %d will keep %d chunks loaded", xCoord, yCoord, zCoord, chunks.size())), (Player) player);
+			PacketDispatcher.sendPacketToPlayer(new Packet3Chat(String.format("[ADVFILLER] The advfiller at %d %d %d will keep %d chunks loaded", xCoord, yCoord, zCoord, chunks.size())), (Player) player);
 		}
 	}
 
