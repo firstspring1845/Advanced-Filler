@@ -4,7 +4,6 @@ import java.util.ArrayList;
 
 import net.minecraft.block.Block;
 import net.minecraft.inventory.IInventory;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
@@ -71,36 +70,6 @@ public class BlockLib
 			return new ArrayList();
 		int meta = world.getBlockMetadata(x, y, z);
 		return block.getBlockDropped(world, x, y, z, meta, 0);
-	}
-	
-	public static ArrayList<ItemStack> getBlockSilkDropped(World world, int x, int y, int z)
-	{
-		ArrayList<ItemStack> stack = new ArrayList<ItemStack>();
-		
-		if(Block.blocksList[world.getBlockId(x,y,z)] == null)
-			return stack;
-			
-		if (Block.blocksList[world.getBlockId(x,y,z)].canSilkHarvest(world, null,x,y,z, world.getBlockMetadata(x,y,z)))
-		{
-			int j = 0;
-
-			if (world.getBlockId(x, y, z) >= 0 && world.getBlockId(x, y, z) < Item.itemsList.length && Item.itemsList[world.getBlockId(x,y,z)].getHasSubtypes())
-			{
-				j = world.getBlockMetadata(x, y, z);
-			}
-			
-			stack.add(new ItemStack(world.getBlockId(x, y, z), 1, j));
-		}
-		else
-		{
-			ArrayList<ItemStack> items = Block.blocksList[world.getBlockId(x,y,z)].getBlockDropped(world, x, y, z, world.getBlockMetadata(x,y,z), 3);
-
-            for (ItemStack item : items)
-            {
-            	stack.add(item);
-            }
-		}
-		return stack;
 	}
 
 	public static boolean canChangeBlock(World world, int x, int y, int z)
