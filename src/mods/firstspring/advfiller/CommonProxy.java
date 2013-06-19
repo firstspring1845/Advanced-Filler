@@ -16,7 +16,7 @@ public class CommonProxy
 
 	void openGui(int x, int y, int z, int left, int right, int up, int down, int forward, int type, boolean loop, boolean iterate, boolean drop)
 	{
-
+		//何もしない
 	}
 
 	boolean isServer()

@@ -3,7 +3,7 @@ package mods.firstspring.advfiller;
 import net.minecraft.client.Minecraft;
 import net.minecraft.world.World;
 import cpw.mods.fml.client.FMLClientHandler;
-import cpw.mods.fml.client.registry.RenderingRegistry;
+import cpw.mods.fml.client.registry.ClientRegistry;
 
 public class ClientProxy extends CommonProxy
 {
@@ -29,10 +29,7 @@ public class ClientProxy extends CommonProxy
 	@Override
 	void registerRenderer()
 	{
-		// TileEntitySpecialRendererは範囲外描画をしてくれないのでEntity使用
-		// 描画用エンティティ（クライアント専用）とそのレンダー登録
-		// 全体的にスポーンチェッカーとTNTのお世話に
-		RenderingRegistry.registerEntityRenderingHandler(EntityRendererFiller.class, new RenderAdvFiller());
+		//なんとなく
+		ClientRegistry.bindTileEntitySpecialRenderer(TileAdvFiller.class,new RenderAdvFiller());
 	}
-
 }
