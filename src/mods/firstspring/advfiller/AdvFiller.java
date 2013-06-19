@@ -33,7 +33,6 @@ import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.network.NetworkMod;
 import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.common.registry.LanguageRegistry;
-import cpw.mods.fml.relauncher.ReflectionHelper;
 
 @Mod(modid = "AdvFiller", name = "Advanced Filler", version = "Build 16")
 @NetworkMod(channels =
@@ -176,7 +175,7 @@ public class AdvFiller
 			ItemStack glass,alloy,laser,teleporter,miner;
 			glass = Items.getItem("glassFiberCableItem");
 			alloy = Items.getItem("advancedAlloy");
-			laser = Items.getItem("miningLaser").copy();
+			laser = Items.getItem("miningLaser").copy();//レーザーだけアイテムスタックのダメージ値を変更するのでインスタンスをコピー
 			teleporter = Items.getItem("teleporter");
 			miner = Items.getItem("miner");
 			laser.setItemDamage(OreDictionary.WILDCARD_VALUE);

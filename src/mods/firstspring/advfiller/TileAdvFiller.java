@@ -24,6 +24,7 @@ import net.minecraft.network.packet.Packet;
 import net.minecraft.network.packet.Packet250CustomPayload;
 import net.minecraft.network.packet.Packet3Chat;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.world.ChunkCoordIntPair;
 import net.minecraftforge.common.FakePlayerFactory;
 import net.minecraftforge.common.ForgeChunkManager;
@@ -42,6 +43,8 @@ import com.google.common.collect.Sets;
 import cpw.mods.fml.common.Loader;
 import cpw.mods.fml.common.network.PacketDispatcher;
 import cpw.mods.fml.common.network.Player;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 public class TileAdvFiller extends TileEntity implements IPowerReceptor, IEnergySink, IPipeEntry
 {
@@ -258,6 +261,9 @@ public class TileAdvFiller extends TileEntity implements IPowerReceptor, IEnergy
 			break;
 		case 5:
 			createTofuBuildList();
+		case 7:
+			ignoreCoordSet = new HashSet();
+			ノーフレームクァリーリスト作成();
 		}
 		if (doLoop)
 			return;
@@ -356,9 +362,6 @@ public class TileAdvFiller extends TileEntity implements IPowerReceptor, IEnergy
 			{
 				// 描画フラグと共有
 				this.doRender = true;
-				EntityRendererFiller e = new EntityRendererFiller(worldObj, this);
-				// 天候エフェクトのふり
-				worldObj.addWeatherEffect(e);
 			}
 			return;
 		}
@@ -500,6 +503,24 @@ public class TileAdvFiller extends TileEntity implements IPowerReceptor, IEnergy
 			for (int x = fromX + 1; x <= toX - 1; x++)
 			{
 				for (int z = fromZ + 1; z <= toZ - 1; z++)
+				{
+					if (checkBreakable(x, y, z))
+						if (!AdvFiller.fillingSet.contains(worldObj.getBlockId(x, y, z)))
+							quarryList.add(new Position(x, y, z));
+				}
+			}
+		}
+		quarryListIterator = quarryList.listIterator();
+	}
+	
+	public void ノーフレームクァリーリスト作成()//ノーフレームの場合は外周一マスも掘る(ななそら氏の)
+	{
+		quarryList = new ArrayList();
+		for (int y = yCoord - 1; y >= 1; y--)
+		{
+			for (int x = fromX; x <= toX; x++)
+			{
+				for (int z = fromZ; z <= toZ; z++)
 				{
 					if (checkBreakable(x, y, z))
 						if (!AdvFiller.fillingSet.contains(worldObj.getBlockId(x, y, z)))
@@ -1091,9 +1112,44 @@ public class TileAdvFiller extends TileEntity implements IPowerReceptor, IEnergy
 	{
 	}
 
+	@SideOnly(Side.CLIENT)
+    public AxisAlignedBB getRenderBoundingBox()
+    {
+        return INFINITE_EXTENT_AABB;
+    }
+	
 	@Override
 	public boolean acceptItems()
 	{
 		return false;
+	}
+	
+	public class Coord
+	{
+		private int x, z;
+
+		private Coord()
+		{
+		}
+
+		public Coord(int x, int z)
+		{
+			this.x = x;
+			this.z = z;
+		}
+
+		@Override
+		public boolean equals(Object arg0)
+		{
+			if (!(arg0 instanceof Coord))
+				return false;
+			return ((Coord) arg0).x == x && ((Coord) arg0).z == z;
+		}
+
+		@Override
+		public int hashCode()
+		{
+			return x + (z << 4);
+		}
 	}
 }

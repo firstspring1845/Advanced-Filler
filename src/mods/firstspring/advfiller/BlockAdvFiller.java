@@ -151,5 +151,4 @@ public class BlockAdvFiller extends BlockContainer
 		textureFrontOn = ir.registerIcon("firstspring/advfiller:filler_front_on");
 		textureFrontOff = ir.registerIcon("firstspring/advfiller:filler_front_off");
 	}
-
 }

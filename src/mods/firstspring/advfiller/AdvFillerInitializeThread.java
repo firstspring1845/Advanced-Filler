@@ -27,5 +27,4 @@ public class AdvFillerInitializeThread implements Runnable
 		tile.setEnable();
 		tile.doLoop = false;
 	}
-
 }

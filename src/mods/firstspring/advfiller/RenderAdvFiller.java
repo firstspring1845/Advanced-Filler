@@ -3,20 +3,18 @@ package mods.firstspring.advfiller;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.entity.Render;
-import net.minecraft.entity.Entity;
+import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
+import net.minecraft.tileentity.TileEntity;
 
 import org.lwjgl.opengl.GL11;
 
-public class RenderAdvFiller extends Render
+public class RenderAdvFiller extends TileEntitySpecialRenderer
 {
-
-	public void renderAdvFiller(EntityRendererFiller e, double x, double y, double z, float f, float f1)
+	public void renderAdvFiller(TileAdvFiller tile, double x, double y, double z)
 	{
-		TileAdvFiller tile = e.filler;
-		if (!e.filler.doRender)
+		if (!tile.doRender)
 			return;
-		System.out.println("render");
+		//System.out.println("render");
 		double fromX = -(tile.xCoord - tile.fromX);
 		double toX = -(tile.xCoord - tile.toX) + 1;
 		double fromY = -(tile.yCoord - tile.fromY);
@@ -33,6 +31,7 @@ public class RenderAdvFiller extends Render
 		RenderHelper.disableStandardItemLighting();
 		GL11.glDepthMask(false);
 		GL11.glDisable(GL11.GL_DEPTH_TEST);
+		GL11.glLineWidth(6);//線を太く
 		// down
 		Tessellator.instance.startDrawing(GL11.GL_LINE_LOOP);
 		Tessellator.instance.setColorRGBA(255, 0, 0, 255);
@@ -73,11 +72,11 @@ public class RenderAdvFiller extends Render
 		GL11.glEnable(GL11.GL_LIGHTING);
 		GL11.glDepthMask(true);
 		GL11.glEnable(GL11.GL_DEPTH_TEST);
+		GL11.glLineWidth(1);//線の太さを戻す
 	}
 
 	@Override
-	public void doRender(Entity var1, double var2, double var4, double var6, float var8, float var9)
-	{
-		this.renderAdvFiller((EntityRendererFiller) var1, var2, var4, var6, var8, var9);
+	public void renderTileEntityAt(TileEntity tileentity, double d0, double d1, double d2, float f) {
+		this.renderAdvFiller((TileAdvFiller) tileentity, d0, d1, d2);
 	}
 }
