@@ -71,7 +71,7 @@ public class GuiScreenAdvFiller extends GuiScreen
 		{
 		case 1:
 			type++;
-			if (type > 7)
+			if (type > 5)
 				type = 0;
 			break;
 		case 2:
@@ -280,10 +280,6 @@ public class GuiScreenAdvFiller extends GuiScreen
 			return "Exclusive Remove Mode";
 		case 5:
 			return "TofuBuild Mode";
-		case 6:
-			return "SilkFortune Quarry Mode";
-		case 7:
-			return "nonFrame SilkFortune Quarry Mode";
 		}
 		return "";
 	}

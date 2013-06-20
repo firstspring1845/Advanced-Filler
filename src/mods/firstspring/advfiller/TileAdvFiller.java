@@ -55,7 +55,7 @@ public class TileAdvFiller extends TileEntity implements IPowerReceptor, IEnergy
 	boolean doRender = false;
 	int left, right, up, down, forward;
 	int type;// 0 : Quarry Mode 1 : Remove Mode 2 : Filling Mode 3 : Flatten
-	// Mode 4 : Exclusive Remove Mode 5 : TofuBuild Mode
+				// Mode 4 : Exclusive Remove Mode 5 : TofuBuild Mode
 	int fromX, fromY, fromZ, toX, toY, toZ;
 	int tick = 0;
 	int rate;
@@ -237,7 +237,6 @@ public class TileAdvFiller extends TileEntity implements IPowerReceptor, IEnergy
 		this.tick = 0;
 		switch (type)
 		{
-		case 6:
 		case 0:
 			frameCreated = false;
 			ignoreCoordSet = new HashSet();
@@ -389,10 +388,6 @@ public class TileAdvFiller extends TileEntity implements IPowerReceptor, IEnergy
 			doFillMode();
 		if (type == 3)
 			doFlattenMode();
-		if (type == 6)
-			doSilkQuarryMode();
-		if (type == 7)
-			silkdig();
 	}
 
 	// Quarry Mode
@@ -405,16 +400,6 @@ public class TileAdvFiller extends TileEntity implements IPowerReceptor, IEnergy
 			return;
 		}
 		dig();
-	}
-
-	public void doSilkQuarryMode()
-	{
-		if (!frameCreated)
-		{
-			buildFrame();
-			return;
-		}
-		silkdig();
 	}
 
 	public boolean checkFrame(int x, int y, int z)
@@ -524,6 +509,7 @@ public class TileAdvFiller extends TileEntity implements IPowerReceptor, IEnergy
 
 	public void dig()
 	{
+
 		if (powerProvider.useEnergy(rate * 4, rate * 4, false) != rate * 4)
 			return;
 		powerProvider.useEnergy(rate * 4, rate * 4, true);
@@ -544,7 +530,7 @@ public class TileAdvFiller extends TileEntity implements IPowerReceptor, IEnergy
 					ItemStack added = BuildCraftProxy.addToRandomInventory(stack, worldObj, xCoord, yCoord, zCoord, ForgeDirection.UNKNOWN);
 					stack.stackSize -= added.stackSize;
 				} else 
-					stack = BlockLib.insertStackToNearInventory(stack, this);
+				stack = BlockLib.insertStackToNearInventory(stack, this);
 				if (stack == null || stack.stackSize <= 0)
 				{
 					continue;
@@ -557,43 +543,6 @@ public class TileAdvFiller extends TileEntity implements IPowerReceptor, IEnergy
 			worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
 		}
 	}
-
-	public void silkdig()
-	{
-		if (powerProvider.useEnergy(rate * 4, rate * 4, false) != rate * 4)
-			return;
-		powerProvider.useEnergy(rate * 4, rate * 4, true);
-		if (quarryListIterator.hasNext())
-		{
-			Position pos = (Position) quarryListIterator.next();
-			List<ItemStack> stacks = BlockLib.getBlockSilkDropped(worldObj, pos.x, pos.y, pos.z);
-			if (AdvFiller.breakEffect)
-				// クァーリーよりコピペ
-				worldObj.playAuxSFXAtEntity(null, 2001, pos.x, pos.y, pos.z, (worldObj.getBlockId(pos.x, pos.y, pos.z) + (worldObj.getBlockMetadata(pos.x, pos.y, pos.z) << 12)));
-				worldObj.setBlock(pos.x, pos.y, pos.z, 0);
-			if (stacks == null || stacks.isEmpty())
-				return;
-			for (ItemStack stack : stacks)
-			{
-				if (bcLoaded)
-				{
-					ItemStack added = BuildCraftProxy.addToRandomInventory(stack, worldObj, xCoord, yCoord, zCoord, ForgeDirection.UNKNOWN);
-					stack.stackSize -= added.stackSize;
-				} else 
-					stack = BlockLib.insertStackToNearInventory(stack, this);
-				if (stack == null || stack.stackSize <= 0)
-				{
-					continue;
-				}
-				BuildCraftProxy.addToRandomPipeEntry(this, ForgeDirection.UNKNOWN, stack);
-			}
-		} else
-		{
-			finished = true;
-			worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
-		}
-	}
-
 
 	// RemoveMode
 
@@ -637,10 +586,6 @@ public class TileAdvFiller extends TileEntity implements IPowerReceptor, IEnergy
 						powerProvider.useEnergy(rate * 6, rate * 6, true);
 						i = 3;
 					}
-					
-					if (type == 6)
-						powerProvider.useEnergy(rate, rate, true);
-					
 					pos = (Position) removeListIterator.next();
 					doRemove(pos.x, pos.y, pos.z);
 
