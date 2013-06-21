@@ -97,123 +97,83 @@ public class TileAdvFiller extends TileEntity implements IPowerReceptor, IEnergy
 
 	public void placed()
 	{
-		if (!worldObj.isRemote)
+		if (worldObj.isRemote)
+			return;
+
+		for (ForgeDirection dir : ForgeDirection.VALID_DIRECTIONS)
 		{
-			IAreaProvider a = null;
-			Position pos = new Position(xCoord, yCoord, zCoord, orient);
-			pos.moveForwards(1);
-			TileEntity tile = worldObj.getBlockTileEntity(pos.x, pos.y, pos.z);
-			if (tile instanceof IAreaProvider)
-				a = (IAreaProvider) tile;
-			if (a != null)
-			{
-				calculateMarker(a);
-				if (bcLoaded)
-					BuildCraftProxy.removeMarker(a);
-			}
+			TileEntity tile = worldObj.getBlockTileEntity(xCoord + dir.offsetX, yCoord + dir.offsetY, zCoord + dir.offsetZ);
+			if (! (tile instanceof IAreaProvider))
+				continue;
+
+			IAreaProvider a = (IAreaProvider) tile;
+			if (! calculateMarker(a))
+				continue;
+
+			if (bcLoaded)
+				BuildCraftProxy.removeMarker(a);
+
+			break;
 		}
 	}
 
-	@SuppressWarnings("incomplete-switch")
-	public void calculateMarker(IAreaProvider a)
+	public boolean calculateMarker(IAreaProvider a)
 	{
-		switch (orient)
-		{
-		case SOUTH:
-			break;
-		case NORTH:
-			break;
-		case EAST:
-			break;
-		case WEST:
-		}
 		Position pos = new Position(xCoord, yCoord, zCoord, orient);
 		pos.moveForwards(1);
-		// System.out.println(pos.toString());
-		// System.out.println(a.xMin() + "," + a.yMin() + "," + a.zMin() + "," +
-		// a.xMax() + "," + a.yMax() + "," + a.zMax());
-		int x, y, z;
-		// minX
-		if (a.xMin() < a.xMax())
-			x = pos.x - a.xMin();
-		else
-			x = pos.x - a.xMax();
+
+		final int minX = pos.x - Math.min(a.xMin(), a.xMax());
+		final int maxX = Math.max(a.xMax(), a.xMin()) - pos.x;
+		final int minY = pos.y - Math.min(a.yMin(), a.yMax());
+		final int maxY = Math.max(a.yMax(), a.yMin()) - pos.y;
+		final int minZ = pos.z - Math.min(a.zMin(), a.zMax());
+		final int maxZ = Math.max(a.zMin(), a.zMax()) - pos.z;
+
+		for (int v : new int[]{minX, maxX, minY, maxY, minZ, maxZ})
+		{
+			if(v < 0 || v > AdvFiller.maxDistance)
+				return false; // 設定値範囲外
+		}
+
 		switch (orient)
 		{
 		case SOUTH:
-			right = x;
+			if(minZ != 0) // 手前側の面は基準点を含む必要あり
+				return false;
+			forward = maxZ;
+			left = maxX;
+			right = minX;
 			break;
 		case NORTH:
-			left = x;
+			if(maxZ != 0)
+				return false;
+			forward = minZ;
+			left = minX;
+			right = maxX;
 			break;
 		case EAST:
+			if(minX != 0)
+				return false;
+			forward = maxX;
+			left = minZ;
+			right = maxZ;
 			break;
 		case WEST:
-			forward = x;
+			if(maxX != 0)
+				return false;
+			forward = minX;
+			left = maxZ;
+			right = minZ;
+			break;
+		default:
+			// 横向きじゃないので異常
+			throw new IllegalStateException("Invalid orient");
 		}
 
-		// maxX
-		if (a.xMin() < a.xMax())
-			x = a.xMax() - pos.x;
-		else
-			x = a.xMin() - pos.x;
-		switch (orient)
-		{
-		case SOUTH:
-			left = x;
-			break;
-		case NORTH:
-			right = x;
-			break;
-		case EAST:
-			forward = x;
-			break;
-		case WEST:
-		}
+		down = minY;
+		up = maxY;
 
-		// minZ
-		if (a.zMin() < a.zMax())
-			z = pos.z - a.zMin();
-		else
-			z = pos.z - a.zMax();
-		switch (orient)
-		{
-		case SOUTH:
-			break;
-		case NORTH:
-			forward = z;
-			break;
-		case EAST:
-			left = z;
-			break;
-		case WEST:
-			right = z;
-		}
-
-		// maxZ
-		if (a.zMin() < a.zMax())
-			z = a.zMax() - pos.z;
-		else
-			z = a.zMin() - pos.z;
-		switch (orient)
-		{
-		case SOUTH:
-			forward = z;
-			break;
-		case NORTH:
-			break;
-		case EAST:
-			right = z;
-			break;
-		case WEST:
-			left = z;
-		}
-
-		// minY
-		down = pos.y - a.yMin();
-
-		// maxY
-		up = a.yMax() - pos.y;
+		return true;
 	}
 
 	public void preInit()
